@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prijava - IPI Akademija</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/themes.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body class="auth-page">
+    <div class="auth-container">
+        <div class="auth-box">
+            <div class="auth-header">
+                <h1>IPI<span>Akademija</span></h1>
+                <h2>Dobrodošli nazad</h2>
+                <p>Prijavite se na vaš nalog</p>
+            </div>
+
+            <form id="loginForm" class="auth-form">
+                <div class="form-group">
+                    <label for="email">Email adresa</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        placeholder="vas@email.com" 
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Lozinka</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        placeholder="••••••••" 
+                        required
+                    >
+                </div>
+
+                <div class="form-options">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="remember">
+                        <span>Zapamti me</span>
+                    </label>
+                    <a href="#" class="forgot-link">Zaboravili ste lozinku?</a>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-full">
+                    Prijavi se
+                </button>
+
+                <div class="form-divider">
+                    <span>ili</span>
+                </div>
+
+                <button type="button" class="btn btn-google btn-full">
+                    Nastavi sa Google
+                </button>
+
+                <div class="auth-footer">
+                    <p>Nemate profil? <a href="register.html">Registrujte se</a></p>
+                </div>
+            </form>
+
+            <div id="errorMessage" class="error-message" style="display: none;"></div>
+            <div id="successMessage" class="success-message" style="display: none;"></div>
+        </div>
+
+        <div class="auth-sidebar">
+            <div class="sidebar-content">
+                <h3>Započnite svoju putanju</h3>
+                <ul class="feature-list">
+                    <li>
+                        <span class="feature-icon">✓</span>
+                        <span>Personalni dashboard za praćenje napretka</span>
+                    </li>
+                    <li>
+                        <span class="feature-icon">✓</span>
+                        <span>Trackeri za navike, učenje i fitness</span>
+                    </li>
+                    <li>
+                        <span class="feature-icon">✓</span>
+                        <span>Student Fun Zone sa igrama</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('loginForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            
+            try {
+                const users = JSON.parse(localStorage.getItem('users') || '[]');
+                const user = users.find(u => u.email === email && u.password === password);
+                
+                if (user) {
+                    localStorage.setItem('currentUser', JSON.stringify(user));
+                    showMessage('Uspješna prijava! Preusmjeravanje...', 'success');
+                    
+                    setTimeout(() => {
+                        window.location.href = 'http://localhost:4200/dashboard';
+                    }, 1500);
+                } else {
+                    showMessage('Pogrešan email ili lozinka!', 'error');
+                }
+            } catch (error) {
+                console.error('Login error:', error);
+                showMessage('Došlo je do greške. Pokušajte ponovo.', 'error');
+            }
+        });
+        
+        function showMessage(message, type) {
+            const errorDiv = document.getElementById('errorMessage');
+            const successDiv = document.getElementById('successMessage');
+            
+            if (type === 'error') {
+                errorDiv.textContent = message;
+                errorDiv.style.display = 'block';
+                successDiv.style.display = 'none';
+            } else {
+                successDiv.textContent = message;
+                successDiv.style.display = 'block';
+                errorDiv.style.display = 'none';
+            }
+            
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+                successDiv.style.display = 'none';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>

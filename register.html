@@ -1,0 +1,241 @@
+<!DOCTYPE html>
+<html lang="bs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registracija - IPI Akademija</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/themes.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+</head>
+<body class="auth-page">
+    <div class="auth-container">
+        <div class="auth-box">
+            <div class="auth-header">
+                <h1>IPI<span>Akademija</span></h1>
+                <h2>Kreirajte profil</h2>
+                <p>Započnite svoju putanju učenja danas</p>
+            </div>
+
+            <form id="registerForm" class="auth-form">
+                <div class="form-group">
+                    <label for="name">Puno ime</label>
+                    <input 
+                        type="text" 
+                        id="name" 
+                        name="name" 
+                        placeholder="Ime Prezime" 
+                        required
+                        minlength="3"
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="email">Email adresa</label>
+                    <input 
+                        type="email" 
+                        id="email" 
+                        name="email" 
+                        placeholder="vas@email.com" 
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="password">Lozinka</label>
+                    <input 
+                        type="password" 
+                        id="password" 
+                        name="password" 
+                        placeholder="••••••••" 
+                        required
+                        minlength="6"
+                    >
+                    <small>Minimum 6 karaktera</small>
+                </div>
+
+                <div class="form-group">
+                    <label for="confirmPassword">Potvrdite lozinku</label>
+                    <input 
+                        type="password" 
+                        id="confirmPassword" 
+                        name="confirmPassword" 
+                        placeholder="••••••••" 
+                        required
+                    >
+                </div>
+
+                <div class="form-group">
+                    <label for="theme">Odaberite temu</label>
+                    <select id="theme" name="theme" required>
+                        <option value="">Izaberite...</option>
+                        <option value="green">Zelena</option>
+                        <option value="blue">Plava</option>
+                        <option value="pink">Roza</option>
+                        <option value="orange">Narandžasta</option>
+                        <option value="dark">Dark</option>
+                        <option value="cyberpunk">Cyberpunk</option>
+                    </select>
+                </div>
+
+                <div class="theme-preview" id="themePreview">
+                    <p>Pregled teme:</p>
+                    <div class="preview-box"></div>
+                </div>
+
+                <div class="form-group">
+                    <label class="checkbox-label">
+                        <input type="checkbox" name="terms" required>
+                        <span>Slažem se sa <a href="#">uslovima korištenja</a> i <a href="#">politikom privatnosti</a></span>
+                    </label>
+                </div>
+
+                <button type="submit" class="btn btn-primary btn-full">
+                    Registruj se
+                </button>
+
+                <div class="form-divider">
+                    <span>ili</span>
+                </div>
+
+                <button type="button" class="btn btn-google btn-full">
+                    Nastavi sa Google
+                </button>
+
+                <div class="auth-footer">
+                    <p>Već imate nalog? <a href="login.html">Prijavite se</a></p>
+                </div>
+            </form>
+
+            <div id="errorMessage" class="error-message" style="display: none;"></div>
+            <div id="successMessage" class="success-message" style="display: none;"></div>
+        </div>
+
+        <div class="auth-sidebar">
+            <div class="sidebar-content">
+                <h3>Šta dobijate?</h3>
+                <ul class="feature-list">
+                    <li>
+                        <span class="feature-icon">✓</span>
+                        <span>Personalni dashboard za praćenje svih aktivnosti</span>
+                    </li>
+                    <li>
+                        <span class="feature-icon">✓</span>
+                        <span>Student Fun Zone sa interaktivnim igrama</span>
+                    </li>
+                    <li>
+                        <span class="feature-icon">✓</span>
+                        <span>AI preporuke za produktivnost</span>
+                    </li>
+                    <li>
+                        <span class="feature-icon">✓</span>
+                        <span>6 modernih tema za personalizaciju</span>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const themeColors = {
+            green: { primary: '#065F46', secondary: '#047857' },
+            blue: { primary: '#1E40AF', secondary: '#2563EB' },
+            pink: { primary: '#9F1239', secondary: '#BE123C' },
+            orange: { primary: '#9A3412', secondary: '#C2410C' },
+            dark: { primary: '#1F2937', secondary: '#374151' },
+            cyberpunk: { primary: '#7C3AED', secondary: '#A855F7' }
+        };
+
+        document.getElementById('theme').addEventListener('change', function() {
+            const theme = this.value;
+            const previewBox = document.querySelector('.preview-box');
+            
+            if (theme && themeColors[theme]) {
+                const colors = themeColors[theme];
+                previewBox.style.background = `linear-gradient(135deg, ${colors.primary}, ${colors.secondary})`;
+                previewBox.style.borderColor = colors.primary;
+                document.getElementById('themePreview').style.display = 'block';
+            } else {
+                document.getElementById('themePreview').style.display = 'none';
+            }
+        });
+
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const confirmPassword = document.getElementById('confirmPassword').value;
+            const theme = document.getElementById('theme').value;
+
+            if (password !== confirmPassword) {
+                showMessage('Lozinke se ne podudaraju!', 'error');
+                return;
+            }
+            
+            if (!theme) {
+                showMessage('Molimo izaberite temu!', 'error');
+                return;
+            }
+            
+            try {
+                const users = JSON.parse(localStorage.getItem('users') || '[]');
+                
+                if (users.find(u => u.email === email)) {
+                    showMessage('Email već postoji!', 'error');
+                    return;
+                }
+                
+                const newUser = {
+                    id: Date.now().toString(),
+                    name,
+                    email,
+                    password,
+                    theme,
+                    createdAt: new Date().toISOString(),
+                    enabledModules: [
+                        'habits', 'sleep', 'study', 'water', 
+                        'mood', 'tasks', 'calendar'
+                    ]
+                };
+                
+                users.push(newUser);
+                localStorage.setItem('users', JSON.stringify(users));
+                localStorage.setItem('currentUser', JSON.stringify(newUser));
+                
+                showMessage('Registracija uspješna! Preusmjeravanje...', 'success');
+                
+                setTimeout(() => {
+                    window.location.href = 'login.html';
+                }, 1500);
+                
+            } catch (error) {
+                console.error('Registration error:', error);
+                showMessage('Došlo je do greške. Pokušajte ponovo.', 'error');
+            }
+        });
+        
+        function showMessage(message, type) {
+            const errorDiv = document.getElementById('errorMessage');
+            const successDiv = document.getElementById('successMessage');
+            
+            if (type === 'error') {
+                errorDiv.textContent = message;
+                errorDiv.style.display = 'block';
+                successDiv.style.display = 'none';
+            } else {
+                successDiv.textContent = message;
+                successDiv.style.display = 'block';
+                errorDiv.style.display = 'none';
+            }
+            
+            setTimeout(() => {
+                errorDiv.style.display = 'none';
+                successDiv.style.display = 'none';
+            }, 5000);
+        }
+    </script>
+</body>
+</html>
