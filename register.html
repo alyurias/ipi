@@ -4,6 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Registracija - IPI Akademija</title>
+    
+    <!-- UČITAJ TEMU ODMAH -->
+    <script>
+        (function() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+            if (currentUser && currentUser.theme && currentUser.theme !== 'default') {
+                document.documentElement.setAttribute('data-theme', currentUser.theme);
+            }
+        })();
+    </script>
+    
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/themes.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -138,6 +149,7 @@
         </div>
     </div>
 
+    <script src="js/auth.js"></script>
     <script>
         const themeColors = {
             green: { primary: '#065F46', secondary: '#047857' },
@@ -148,6 +160,7 @@
             cyberpunk: { primary: '#7C3AED', secondary: '#A855F7' }
         };
 
+        // Theme preview
         document.getElementById('theme').addEventListener('change', function() {
             const theme = this.value;
             const previewBox = document.querySelector('.preview-box');
@@ -162,81 +175,29 @@
             }
         });
 
+        // Register form
         document.getElementById('registerForm').addEventListener('submit', async function(e) {
             e.preventDefault();
             
-            const name = document.getElementById('name').value;
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            const theme = document.getElementById('theme').value;
-
-            if (password !== confirmPassword) {
-                showMessage('Lozinke se ne podudaraju!', 'error');
-                return;
-            }
+            const userData = {
+                name: document.getElementById('name').value,
+                email: document.getElementById('email').value,
+                password: document.getElementById('password').value,
+                confirmPassword: document.getElementById('confirmPassword').value,
+                theme: document.getElementById('theme').value
+            };
             
-            if (!theme) {
-                showMessage('Molimo izaberite temu!', 'error');
-                return;
-            }
+            const result = await window.authManager.register(userData);
             
-            try {
-                const users = JSON.parse(localStorage.getItem('users') || '[]');
-                
-                if (users.find(u => u.email === email)) {
-                    showMessage('Email već postoji!', 'error');
-                    return;
-                }
-                
-                const newUser = {
-                    id: Date.now().toString(),
-                    name,
-                    email,
-                    password,
-                    theme,
-                    createdAt: new Date().toISOString(),
-                    enabledModules: [
-                        'habits', 'sleep', 'study', 'water', 
-                        'mood', 'tasks', 'calendar'
-                    ]
-                };
-                
-                users.push(newUser);
-                localStorage.setItem('users', JSON.stringify(users));
-                localStorage.setItem('currentUser', JSON.stringify(newUser));
-                
-                showMessage('Registracija uspješna! Preusmjeravanje...', 'success');
-                
+            if (result.success) {
+                showAuthMessage(result.message, 'success');
                 setTimeout(() => {
                     window.location.href = 'login.html';
                 }, 1500);
-                
-            } catch (error) {
-                console.error('Registration error:', error);
-                showMessage('Došlo je do greške. Pokušajte ponovo.', 'error');
+            } else {
+                showAuthMessage(result.message, 'error');
             }
         });
-        
-        function showMessage(message, type) {
-            const errorDiv = document.getElementById('errorMessage');
-            const successDiv = document.getElementById('successMessage');
-            
-            if (type === 'error') {
-                errorDiv.textContent = message;
-                errorDiv.style.display = 'block';
-                successDiv.style.display = 'none';
-            } else {
-                successDiv.textContent = message;
-                successDiv.style.display = 'block';
-                errorDiv.style.display = 'none';
-            }
-            
-            setTimeout(() => {
-                errorDiv.style.display = 'none';
-                successDiv.style.display = 'none';
-            }, 5000);
-        }
     </script>
 </body>
 </html>

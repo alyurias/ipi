@@ -4,6 +4,17 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Prijava - IPI Akademija</title>
+    
+    <!-- UČITAJ TEMU ODMAH -->
+    <script>
+        (function() {
+            const currentUser = JSON.parse(localStorage.getItem('currentUser') || 'null');
+            if (currentUser && currentUser.theme && currentUser.theme !== 'default') {
+                document.documentElement.setAttribute('data-theme', currentUser.theme);
+            }
+        })();
+    </script>
+    
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/themes.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -92,6 +103,7 @@
         </div>
     </div>
 
+    <script src="js/auth.js"></script>
     <script>
         document.getElementById('loginForm').addEventListener('submit', async function(e) {
             e.preventDefault();
@@ -99,46 +111,18 @@
             const email = document.getElementById('email').value;
             const password = document.getElementById('password').value;
             
-            try {
-                const users = JSON.parse(localStorage.getItem('users') || '[]');
-                const user = users.find(u => u.email === email && u.password === password);
-                
-                if (user) {
-                    localStorage.setItem('currentUser', JSON.stringify(user));
-                    showMessage('Uspješna prijava!', 'success');
-                    
-                  
-                    setTimeout(() => {
-                        window.location.href = 'index.html';
-                    }, 1500);
-                } else {
-                    showMessage('Pogrešan email ili lozinka!', 'error');
-                }
-            } catch (error) {
-                console.error('Login error:', error);
-                showMessage('Došlo je do greške. Pokušajte ponovo.', 'error');
+            const result = await window.authManager.login(email, password);
+            
+            if (result.success) {
+                showAuthMessage(result.message, 'success');
+                // Ovdje ćeš kasnije dodati Angular integraciju
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1500);
+            } else {
+                showAuthMessage(result.message, 'error');
             }
         });
-        
-        function showMessage(message, type) {
-            const errorDiv = document.getElementById('errorMessage');
-            const successDiv = document.getElementById('successMessage');
-            
-            if (type === 'error') {
-                errorDiv.textContent = message;
-                errorDiv.style.display = 'block';
-                successDiv.style.display = 'none';
-            } else {
-                successDiv.textContent = message;
-                successDiv.style.display = 'block';
-                errorDiv.style.display = 'none';
-            }
-            
-            setTimeout(() => {
-                errorDiv.style.display = 'none';
-                successDiv.style.display = 'none';
-            }, 5000);
-        }
     </script>
 </body>
 </html>

@@ -1,3 +1,5 @@
+// MAIN.JS - Glavna logika za IPI Akademija stranicu
+
 document.addEventListener('DOMContentLoaded', function() {
     initNavigation();
     initScrollEffects();
@@ -170,7 +172,7 @@ function initLoginModal() {
                 updateNavigation();
                 applyUserTheme();
                 
-                // kasnije dodati redirect na Angular dashboard
+                // Ovdje ćeš kasnije dodati redirect na Angular dashboard
                 setTimeout(() => {
                     window.location.reload();
                 }, 1000);
@@ -181,7 +183,7 @@ function initLoginModal() {
     }
 }
 
-// === KONTAKT FORMA ====
+// ===== KONTAKT FORMA =====
 function initContactForm() {
     const contactForm = document.getElementById('contactForm');
     
@@ -211,15 +213,13 @@ function initContactForm() {
 
 // ===== TEME =====
 function applyTheme(themeName) {
-    const body = document.body;
+    const html = document.documentElement;
     
-    // Ukloni sve teme
-    const themes = ['green-theme', 'blue-theme', 'pink-theme', 'orange-theme', 'dark-theme', 'cyberpunk-theme'];
-    themes.forEach(theme => body.classList.remove(theme));
-    
-    // Dodaj novu temu
+    // Postavi data-theme atribut
     if (themeName && themeName !== 'default') {
-        body.classList.add(`${themeName}-theme`);
+        html.setAttribute('data-theme', themeName);
+    } else {
+        html.removeAttribute('data-theme');
     }
     
     // Sačuvaj u localStorage
@@ -241,7 +241,7 @@ function applyUserTheme() {
     }
 }
 
-
+// ===== NOTIFIKACIJE =====
 function showNotification(message, type = 'info') {
     // Ukloni postojeću notifikaciju
     const existingNotification = document.querySelector('.notification');
@@ -274,14 +274,14 @@ function showNotification(message, type = 'info') {
     
     document.body.appendChild(notification);
     
-
+    // Ukloni nakon 3 sekunde
     setTimeout(() => {
         notification.style.animation = 'slideOutRight 0.3s ease';
         setTimeout(() => notification.remove(), 300);
     }, 3000);
 }
 
-
+// Dodaj CSS animacije
 const style = document.createElement('style');
 style.textContent = `
     @keyframes slideInRight {
@@ -308,17 +308,17 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// == NAVIGACIJA UPDATE =
+// ===== NAVIGACIJA UPDATE =====
 function updateNavigation() {
     const loginBtn = document.getElementById('loginBtn');
     const currentUser = window.authManager?.getCurrentUser();
     
     if (loginBtn && currentUser) {
-     
+        // Ako je korisnik prijavljen, promijeni dugme
         loginBtn.textContent = `👤 ${currentUser.name}`;
         loginBtn.style.background = 'var(--highlight)';
         
-   
+        // Dodaj logout na klik
         loginBtn.removeEventListener('click', openLoginModal);
         loginBtn.addEventListener('click', (e) => {
             e.preventDefault();
@@ -336,7 +336,7 @@ function openLoginModal(e) {
     document.getElementById('loginModal').style.display = 'block';
 }
 
-
+// ===== HELPER FUNKCIJE =====
 function isUserLoggedIn() {
     return window.authManager?.isAuthenticated() || false;
 }
