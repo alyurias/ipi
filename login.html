@@ -63,6 +63,7 @@
 
                 <div class="auth-footer">
                     <p>Nemate profil? <a href="register.html">Registrujte se</a></p>
+                    <p><a href="index.html">← Nazad na početnu</a></p>
                 </div>
             </form>
 
@@ -104,10 +105,11 @@
                 
                 if (user) {
                     localStorage.setItem('currentUser', JSON.stringify(user));
-                    showMessage('Uspješna prijava! Preusmjeravanje...', 'success');
+                    showMessage('Uspješna prijava!', 'success');
                     
+                  
                     setTimeout(() => {
-                        window.location.href = 'http://localhost:4200/dashboard';
+                        window.location.href = 'index.html';
                     }, 1500);
                 } else {
                     showMessage('Pogrešan email ili lozinka!', 'error');
