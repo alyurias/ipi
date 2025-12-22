@@ -115,9 +115,9 @@
             
             if (result.success) {
                 showAuthMessage(result.message, 'success');
-                // Ovdje ćeš kasnije dodati Angular integraciju
+                // redirect na angular dashboard
                 setTimeout(() => {
-                    window.location.href = 'index.html';
+                    window.location.href = 'http://localhost:4200';
                 }, 1500);
             } else {
                 showAuthMessage(result.message, 'error');

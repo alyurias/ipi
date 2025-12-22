@@ -1,0 +1,92 @@
+<div class="dashboard">
+  <!-- Header -->
+  <header class="dashboard-header">
+    <div class="header-content">
+      <div class="header-left">
+        <h1>🎯 Personal Life Dashboard</h1>
+      </div>
+      <div class="header-right" *ngIf="currentUser">
+        <div class="user-info">
+          <span class="user-name">👤 {{ currentUser.name }}</span>
+          <span class="user-theme">{{ currentUser.theme }}</span>
+          <button class="btn-logout" (click)="logout()">Odjavi se</button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="dashboard-main">
+    <!-- Welcome Section -->
+    <div class="welcome-section" *ngIf="currentUser">
+      <h2>Dobrodošao, {{ currentUser.name }}! 🎉</h2>
+      <p>Ovo je tvoj personalni dashboard za praćenje navika i produktivnosti.</p>
+    </div>
+
+    <!-- No User -->
+    <div class="no-user" *ngIf="!currentUser">
+      <h2>⚠️ Nisi prijavljen</h2>
+      <p>Molimo prijavite se da pristupite dashboardu.</p>
+      <a href="http://localhost:5500/login.html" class="btn-primary">Prijavi se</a>
+    </div>
+
+    <!-- Trackers Grid -->
+    <div class="trackers-grid" *ngIf="currentUser">
+      <div class="tracker-card">
+        <div class="tracker-icon">💧</div>
+        <h3>Water Intake</h3>
+        <p>Prati dnevni unos vode</p>
+        <span class="coming-soon">Coming soon...</span>
+      </div>
+
+      <div class="tracker-card">
+        <div class="tracker-icon">😴</div>
+        <h3>Sleep Tracker</h3>
+        <p>Analiziraj kvalitet sna</p>
+        <span class="coming-soon">Coming soon...</span>
+      </div>
+
+      <div class="tracker-card">
+        <div class="tracker-icon">✅</div>
+        <h3>Habit Tracker</h3>
+        <p>Izgradi zdrave navike</p>
+        <span class="coming-soon">Coming soon...</span>
+      </div>
+
+      <div class="tracker-card">
+        <div class="tracker-icon">📚</div>
+        <h3>Study Planner</h3>
+        <p>Organizuj učenje</p>
+        <span class="coming-soon">Coming soon...</span>
+      </div>
+
+      <div class="tracker-card">
+        <div class="tracker-icon">🧘</div>
+        <h3>Fitness Tracker</h3>
+        <p>Prati treninge</p>
+        <span class="coming-soon">Coming soon...</span>
+      </div>
+
+      <div class="tracker-card">
+        <div class="tracker-icon">😊</div>
+        <h3>Mood Tracker</h3>
+        <p>Prati raspoloženje</p>
+        <span class="coming-soon">Coming soon...</span>
+      </div>
+
+      <div class="tracker-card">
+        <div class="tracker-icon">📝</div>
+        <h3>Task Manager</h3>
+        <p>Organizuj zadatke</p>
+        <span class="coming-soon">Coming soon...</span>
+      </div>
+
+      <div class="tracker-card">
+        <div class="tracker-icon">🍽️</div>
+        <h3>Meal Planner</h3>
+        <p>Planiraj obroke</p>
+        <span class="coming-soon">Coming soon...</span>
+      </div>
+    </div>
+  </main>
+</div>

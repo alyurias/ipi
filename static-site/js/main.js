@@ -156,31 +156,29 @@ function initLoginModal() {
         }
     });
     
-    // Submit forma
-    if (loginForm) {
-        loginForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
+// Submit forma
+if (loginForm) {
+    loginForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const email = document.getElementById('email').value;
+        const password = document.getElementById('password').value;
+        
+        const result = await window.authManager.login(email, password);
+        
+        if (result.success) {
+            showNotification(result.message, 'success');
+            modal.style.display = 'none';
             
-            const email = document.getElementById('email').value;
-            const password = document.getElementById('password').value;
-            
-            const result = await window.authManager.login(email, password);
-            
-            if (result.success) {
-                showNotification(result.message, 'success');
-                modal.style.display = 'none';
-                updateNavigation();
-                applyUserTheme();
-                
-                // Ovdje ćeš kasnije dodati redirect na Angular dashboard
-                setTimeout(() => {
-                    window.location.reload();
-                }, 1000);
-            } else {
-                showNotification(result.message, 'error');
-            }
-        });
-    }
+            // Preusmjeri na Angular dashboard
+            setTimeout(() => {
+                window.location.href = 'http://localhost:4200/dashboard';  // ← NOVO
+            }, 1000);
+        } else {
+            showNotification(result.message, 'error');
+        }
+    });
+}
 }
 
 // ===== KONTAKT FORMA =====
@@ -308,28 +306,162 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
-// ===== NAVIGACIJA UPDATE =====
 function updateNavigation() {
     const loginBtn = document.getElementById('loginBtn');
+    const loginBtnHero = document.getElementById('loginBtnHero');
+    const loginModal = document.getElementById('loginModal');
     const currentUser = window.authManager?.getCurrentUser();
     
-    if (loginBtn && currentUser) {
-        // Ako je korisnik prijavljen, promijeni dugme
-        loginBtn.textContent = `👤 ${currentUser.name}`;
-        loginBtn.style.background = 'var(--highlight)';
+    if (currentUser) {
+        // **SAKRIJ LOGIN MODAL POTPUNO**
+        if (loginModal) {
+            loginModal.style.display = 'none';
+            // Disable modal otvaranje
+            loginModal.classList.add('disabled');
+        }
         
-        // Dodaj logout na klik
-        loginBtn.removeEventListener('click', openLoginModal);
-        loginBtn.addEventListener('click', (e) => {
-            e.preventDefault();
-            if (confirm('Želite li se odjaviti?')) {
-                window.authManager.logout();
-                showNotification('Uspješno ste se odjavili!', 'success');
-                setTimeout(() => window.location.reload(), 1000);
-            }
-        });
+        // **HEADER LOGIN BUTTON**
+        if (loginBtn) {
+            // Ukloni stari event listener za modal
+            const newLoginBtn = loginBtn.cloneNode(true);
+            loginBtn.parentNode.replaceChild(newLoginBtn, loginBtn);
+            
+            // Promijeni tekst i stil
+            newLoginBtn.innerHTML = `
+                <span style="margin-right: 8px;">👤</span>
+                <span>${currentUser.name}</span>
+            `;
+            newLoginBtn.style.background = 'var(--highlight)';
+            newLoginBtn.classList.add('logged-in');
+            
+            // Dodaj novi event listener za dropdown
+            newLoginBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                e.stopPropagation();
+                showUserMenu(newLoginBtn, currentUser);
+            });
+        }
+        
+        // **HERO SECTION BUTTON**
+        if (loginBtnHero) {
+            // Ukloni stari event listener
+            const newHeroBtn = loginBtnHero.cloneNode(true);
+            loginBtnHero.parentNode.replaceChild(newHeroBtn, loginBtnHero);
+            
+            newHeroBtn.textContent = '🎯 Idi na Dashboard';
+            newHeroBtn.classList.remove('btn-secondary');
+            newHeroBtn.classList.add('btn-primary');
+            
+            // Dodaj novi event listener
+            newHeroBtn.addEventListener('click', (e) => {
+                e.preventDefault();
+                window.location.href = 'http://localhost:4200/dashboard';
+            });
+        }
+    } else {
+        // **AKO NIJE PRIJAVLJEN** - omogući login modal
+        if (loginModal) {
+            loginModal.classList.remove('disabled');
+        }
     }
 }
+
+
+// Nova funkcija za user menu
+function showUserMenu(button, user) {
+    // Provjeri da li već postoji menu
+    const existingMenu = document.querySelector('.user-dropdown-menu');
+    if (existingMenu) {
+        existingMenu.remove();
+        return;
+    }
+    
+    // Kreiraj dropdown menu
+    const menu = document.createElement('div');
+    menu.className = 'user-dropdown-menu';
+    menu.innerHTML = `
+        <div class="menu-item" onclick="goToDashboard()">
+            <span>🎯</span> Dashboard
+        </div>
+        <div class="menu-item" onclick="logout()">
+            <span>🚪</span> Odjavi se
+        </div>
+    `;
+    
+    // Pozicioniraj menu
+    const rect = button.getBoundingClientRect();
+    menu.style.cssText = `
+        position: fixed;
+        top: ${rect.bottom + 10}px;
+        right: ${window.innerWidth - rect.right}px;
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        z-index: 10000;
+        min-width: 200px;
+        overflow: hidden;
+    `;
+    
+    document.body.appendChild(menu);
+    
+    // Zatvori menu kad klikneš van
+    setTimeout(() => {
+        document.addEventListener('click', function closeMenu(e) {
+            if (!menu.contains(e.target) && e.target !== button) {
+                menu.remove();
+                document.removeEventListener('click', closeMenu);
+            }
+        });
+    }, 100);
+}
+
+// Helper funkcije za menu
+function goToDashboard() {
+    window.location.href = 'http://localhost:4200/dashboard';
+}
+
+function logout() {
+    if (confirm('Želite li se odjaviti?')) {
+        window.authManager.logout();
+        showNotification('Uspješno ste se odjavili!', 'success');
+        setTimeout(() => window.location.reload(), 1000);
+    }
+}
+
+// Dodaj CSS za dropdown menu
+const menuStyle = document.createElement('style');
+menuStyle.textContent = `
+    .user-dropdown-menu .menu-item {
+        padding: 12px 20px;
+        cursor: pointer;
+        transition: all 0.2s;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        font-size: 14px;
+        color: #2c3e50;
+    }
+    
+    .user-dropdown-menu .menu-item:hover {
+        background: #f8f9fa;
+    }
+    
+    .user-dropdown-menu .menu-item:active {
+        background: #e9ecef;
+    }
+    
+    .user-dropdown-menu .menu-item span {
+        font-size: 16px;
+    }
+    
+    .login-btn.logged-in {
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+`;
+document.head.appendChild(menuStyle);
 
 function openLoginModal(e) {
     e.preventDefault();

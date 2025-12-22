@@ -1,0 +1,223 @@
+.dashboard {
+  min-height: 100vh;
+  background: var(--surface, #f5f7fa);
+}
+
+/* Header */
+.dashboard-header {
+  background: var(--surface-alt, white);
+  border-bottom: 1px solid var(--border, #e0e0e0);
+  padding: 20px 30px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.05);
+  position: sticky;
+  top: 0;
+  z-index: 100;
+}
+
+.header-content {
+  max-width: 1400px;
+  margin: 0 auto;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 20px;
+}
+
+.header-left h1 {
+  margin: 0;
+  color: var(--text, #2c3e50);
+  font-size: 28px;
+  font-weight: 700;
+}
+
+.header-right {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+
+.user-info {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  padding: 10px 20px;
+  background: var(--surface, #f8f9fa);
+  border-radius: 10px;
+}
+
+.user-name {
+  font-weight: 600;
+  color: var(--primary, #3498db);
+  font-size: 16px;
+}
+
+.user-theme {
+  padding: 6px 12px;
+  background: var(--accent, #e3f2fd);
+  color: var(--primary, #3498db);
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.btn-logout {
+  padding: 8px 16px;
+  background: #e74c3c;
+  color: white;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 500;
+  transition: all 0.3s;
+}
+
+.btn-logout:hover {
+  background: #c0392b;
+  transform: translateY(-2px);
+}
+
+/* Main */
+.dashboard-main {
+  max-width: 1400px;
+  margin: 0 auto;
+  padding: 40px 30px;
+}
+
+/* Welcome */
+.welcome-section {
+  background: var(--surface-alt, white);
+  padding: 30px 40px;
+  border-radius: 16px;
+  margin-bottom: 40px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  border-left: 4px solid var(--primary, #3498db);
+}
+
+.welcome-section h2 {
+  margin: 0 0 10px 0;
+  color: var(--text, #2c3e50);
+  font-size: 32px;
+}
+
+.welcome-section p {
+  margin: 0;
+  color: var(--text-muted, #7f8c8d);
+  font-size: 16px;
+}
+
+/* No User */
+.no-user {
+  text-align: center;
+  padding: 80px 40px;
+  background: var(--surface-alt, white);
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+}
+
+.no-user h2 {
+  color: #e74c3c;
+  margin-bottom: 15px;
+  font-size: 28px;
+}
+
+.no-user p {
+  color: var(--text-muted, #7f8c8d);
+  margin-bottom: 25px;
+}
+
+.no-user .btn-primary {
+  display: inline-block;
+  padding: 14px 32px;
+  background: var(--primary, #3498db);
+  color: white;
+  text-decoration: none;
+  border-radius: 8px;
+  font-weight: 600;
+  transition: all 0.3s;
+}
+
+.no-user .btn-primary:hover {
+  background: var(--secondary, #2980b9);
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(52, 152, 219, 0.3);
+}
+
+/* Trackers Grid */
+.trackers-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 25px;
+}
+
+.tracker-card {
+  background: var(--surface-alt, white);
+  padding: 30px;
+  border-radius: 16px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+  transition: all 0.3s;
+  cursor: pointer;
+  border: 2px solid transparent;
+  position: relative;
+  overflow: hidden;
+}
+
+.tracker-card:hover {
+  transform: translateY(-6px);
+  box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+  border-color: var(--primary, #3498db);
+}
+
+.tracker-icon {
+  font-size: 48px;
+  margin-bottom: 15px;
+  filter: grayscale(50%);
+  transition: all 0.3s;
+}
+
+.tracker-card:hover .tracker-icon {
+  filter: grayscale(0%);
+  transform: scale(1.1);
+}
+
+.tracker-card h3 {
+  margin: 0 0 8px 0;
+  color: var(--text, #2c3e50);
+  font-size: 20px;
+  font-weight: 700;
+}
+
+.tracker-card p {
+  margin: 0 0 15px 0;
+  color: var(--text-muted, #7f8c8d);
+  font-size: 14px;
+  line-height: 1.5;
+}
+
+.coming-soon {
+  display: inline-block;
+  padding: 4px 12px;
+  background: var(--accent, #e3f2fd);
+  color: var(--primary, #3498db);
+  border-radius: 20px;
+  font-size: 12px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .header-content {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .trackers-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-main {
+    padding: 20px 15px;
+  }
+}
