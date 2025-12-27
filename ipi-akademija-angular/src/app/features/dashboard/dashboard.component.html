@@ -1,0 +1,39 @@
+
+<app-header></app-header>
+
+<div class="dashboard-container">
+  <div class="container">
+    <div class="dashboard-header">
+      <h1>Dobrodošli, {{ currentUser()?.name }}! 👋</h1>
+      <p>Vaš personalni dashboard</p>
+    </div>
+
+    <div class="dashboard-grid">
+      <div class="dashboard-card">
+        <h3>📚 Trackeri</h3>
+        <p>Pratite svoje navike, učenje, spavanje i više</p>
+        <button class="btn btn-primary">Otvori trackere</button>
+      </div>
+
+      <div class="dashboard-card">
+        <h3>🎮 Student Fun Zone</h3>
+        <p>Igrajte Bingo, kvizove i još mnogo toga</p>
+        <button class="btn btn-primary" routerLink="/fun-zone">Idi na Fun Zone</button>
+      </div>
+
+      <div class="dashboard-card">
+        <h3>📊 Statistika</h3>
+        <p>Analizirajte svoj napredak</p>
+        <button class="btn btn-primary">Pogledaj statistiku</button>
+      </div>
+
+      <div class="dashboard-card">
+        <h3>⚙️ Postavke</h3>
+        <p>Prilagodite svoj profil i temu</p>
+        <button class="btn btn-primary">Postavke</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<app-footer></app-footer>

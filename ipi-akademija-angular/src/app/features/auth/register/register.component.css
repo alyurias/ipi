@@ -1,0 +1,18 @@
+
+
+.theme-preview {
+  margin: 15px 0;
+}
+
+.theme-preview p {
+  font-size: 14px;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+
+.preview-box {
+  height: 60px;
+  border-radius: 8px;
+  border: 2px solid;
+  transition: all 0.3s ease;
+}

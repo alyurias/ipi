@@ -1,0 +1,50 @@
+
+<header class="header">
+  <nav class="navbar">
+    <div class="container">
+      <div class="nav-wrapper">
+        <div class="logo">
+          <a routerLink="/">
+            <img src="assets/crni.png" alt="IPI Akademija">
+          </a>
+        </div>
+        
+        <ul class="nav-menu" [class.active]="menuOpen" id="navMenu">
+          <li><a routerLink="/" fragment="pocetna" class="nav-link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">Početna</a></li>
+          <li><a routerLink="/" fragment="o-nama" class="nav-link">O Nama</a></li>
+          <li><a routerLink="/" fragment="programi" class="nav-link">Programi</a></li>
+          <li><a routerLink="/" fragment="kontakt" class="nav-link">Kontakt</a></li>
+          
+          @if (currentUser()) {
+            <li>
+              <button class="nav-link login-btn logged-in" (click)="toggleUserMenu($event)">
+                <span style="margin-right: 8px;">👤</span>
+                <span>{{ currentUser()?.name }}</span>
+              </button>
+            </li>
+          } @else {
+            <li><a routerLink="/login" class="nav-link login-btn">Prijavi se</a></li>
+          }
+        </ul>
+        
+        <div class="hamburger" [class.active]="menuOpen" (click)="toggleMenu()">
+          <span></span>
+          <span></span>
+          <span></span>
+        </div>
+      </div>
+    </div>
+  </nav>
+</header>
+
+<!-- User Dropdown Menu -->
+@if (showUserMenu) {
+  <div class="user-dropdown-menu" [style.top.px]="menuPosition.top" [style.right.px]="menuPosition.right">
+    <div class="menu-item" (click)="goToDashboard()">
+      <span>🎯</span> Dashboard
+    </div>
+    <div class="menu-item" (click)="logout()">
+      <span>🚪</span> Odjavi se
+    </div>
+  </div>
+}

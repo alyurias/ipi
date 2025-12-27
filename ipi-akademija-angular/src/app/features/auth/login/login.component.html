@@ -1,0 +1,83 @@
+
+<div class="auth-page">
+  <div class="auth-container">
+    <div class="auth-box">
+      <div class="auth-header">
+        <h1>IPI<span>Akademija</span></h1>
+        <h2>Dobrodošli nazad</h2>
+        <p>Prijavite se na vaš nalog</p>
+      </div>
+
+      <form class="auth-form" (submit)="onSubmit($event)">
+        <div class="form-group">
+          <label for="email">Email adresa</label>
+          <input 
+            type="email" 
+            id="email" 
+            name="email" 
+            placeholder="vas@email.com" 
+            [(ngModel)]="loginData.email"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="password">Lozinka</label>
+          <input 
+            type="password" 
+            id="password" 
+            name="password" 
+            placeholder="••••••••" 
+            [(ngModel)]="loginData.password"
+            required
+          >
+        </div>
+
+        <div class="form-options">
+          <label class="checkbox-label">
+            <input type="checkbox" name="remember">
+            <span>Zapamti me</span>
+          </label>
+          <a href="#" class="forgot-link">Zaboravili ste lozinku?</a>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-full" [disabled]="loading">
+          {{ loading ? 'Prijava...' : 'Prijavi se' }}
+        </button>
+
+        <div class="form-divider">
+          <span>ili</span>
+        </div>
+
+        <button type="button" class="btn btn-google btn-full">
+          Nastavi sa Google
+        </button>
+
+        <div class="auth-footer">
+          <p>Nemate profil? <a routerLink="/register">Registrujte se</a></p>
+          <p><a routerLink="/">← Nazad na početnu</a></p>
+        </div>
+      </form>
+    </div>
+
+    <div class="auth-sidebar">
+      <div class="sidebar-content">
+        <h3>Započnite svoju putanju</h3>
+        <ul class="feature-list">
+          <li>
+            <span class="feature-icon">✓</span>
+            <span>Personalni dashboard za praćenje napretka</span>
+          </li>
+          <li>
+            <span class="feature-icon">✓</span>
+            <span>Trackeri za navike, učenje i fitness</span>
+          </li>
+          <li>
+            <span class="feature-icon">✓</span>
+            <span>Student Fun Zone sa igrama</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

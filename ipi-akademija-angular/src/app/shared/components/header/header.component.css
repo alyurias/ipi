@@ -1,0 +1,40 @@
+
+.user-dropdown-menu {
+  position: fixed;
+  background: white;
+  border: 1px solid #ddd;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  z-index: 10000;
+  min-width: 200px;
+  overflow: hidden;
+}
+
+.user-dropdown-menu .menu-item {
+  padding: 12px 20px;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  color: #2c3e50;
+}
+
+.user-dropdown-menu .menu-item:hover {
+  background: #f8f9fa;
+}
+
+.user-dropdown-menu .menu-item:active {
+  background: #e9ecef;
+}
+
+.user-dropdown-menu .menu-item span {
+  font-size: 16px;
+}
+
+.login-btn.logged-in {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}

@@ -1,0 +1,143 @@
+
+<div class="auth-page">
+  <div class="auth-container">
+    <div class="auth-box">
+      <div class="auth-header">
+        <h1>IPI<span>Akademija</span></h1>
+        <h2>Kreirajte profil</h2>
+        <p>Započnite svoju putanju učenja danas</p>
+      </div>
+
+      <form class="auth-form" (submit)="onSubmit($event)">
+        <div class="form-group">
+          <label for="name">Puno ime</label>
+          <input 
+            type="text" 
+            id="name" 
+            name="name" 
+            placeholder="Ime Prezime" 
+            [(ngModel)]="registerData.name"
+            required
+            minlength="3"
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="email">Email adresa</label>
+          <input 
+            type="email" 
+            id="email" 
+            name="email" 
+            placeholder="vas@email.com" 
+            [(ngModel)]="registerData.email"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="password">Lozinka</label>
+          <input 
+            type="password" 
+            id="password" 
+            name="password" 
+            placeholder="••••••••" 
+            [(ngModel)]="registerData.password"
+            required
+            minlength="6"
+          >
+          <small>Minimum 6 karaktera</small>
+        </div>
+
+        <div class="form-group">
+          <label for="confirmPassword">Potvrdite lozinku</label>
+          <input 
+            type="password" 
+            id="confirmPassword" 
+            name="confirmPassword" 
+            placeholder="••••••••" 
+            [(ngModel)]="registerData.confirmPassword"
+            required
+          >
+        </div>
+
+        <div class="form-group">
+          <label for="theme">Odaberite temu</label>
+          <select 
+            id="theme" 
+            name="theme" 
+            [(ngModel)]="registerData.theme" 
+            (change)="onThemeChange()"
+            required
+          >
+            <option value="">Izaberite...</option>
+            <option value="green">Zelena</option>
+            <option value="blue">Plava</option>
+            <option value="pink">Roza</option>
+            <option value="orange">Narandžasta</option>
+            <option value="dark">Dark</option>
+            <option value="cyberpunk">Cyberpunk</option>
+          </select>
+        </div>
+
+        @if (showThemePreview) {
+          <div class="theme-preview">
+            <p>Pregled teme:</p>
+            <div 
+              class="preview-box" 
+              [style.background]="themePreviewGradient"
+              [style.border-color]="themeColors?.primary"
+            ></div>
+          </div>
+        }
+
+        <div class="form-group">
+          <label class="checkbox-label">
+            <input type="checkbox" name="terms" [(ngModel)]="agreeToTerms" required>
+            <span>Slažem se sa <a href="#">uslovima korištenja</a> i <a href="#">politikom privatnosti</a></span>
+          </label>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-full" [disabled]="loading">
+          {{ loading ? 'Registracija...' : 'Registruj se' }}
+        </button>
+
+        <div class="form-divider">
+          <span>ili</span>
+        </div>
+
+        <button type="button" class="btn btn-google btn-full">
+          Nastavi sa Google
+        </button>
+
+        <div class="auth-footer">
+          <p>Već imate nalog? <a routerLink="/login">Prijavite se</a></p>
+          <p><a routerLink="/">← Nazad na početnu</a></p>
+        </div>
+      </form>
+    </div>
+
+    <div class="auth-sidebar">
+      <div class="sidebar-content">
+        <h3>Šta dobijate?</h3>
+        <ul class="feature-list">
+          <li>
+            <span class="feature-icon">✓</span>
+            <span>Personalni dashboard za praćenje svih aktivnosti</span>
+          </li>
+          <li>
+            <span class="feature-icon">✓</span>
+            <span>Student Fun Zone sa interaktivnim igrama</span>
+          </li>
+          <li>
+            <span class="feature-icon">✓</span>
+            <span>AI preporuke za produktivnost</span>
+          </li>
+          <li>
+            <span class="feature-icon">✓</span>
+            <span>6 modernih tema za personalizaciju</span>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>

@@ -14,16 +14,16 @@ describe('AppComponent', () => {
     expect(app).toBeTruthy();
   });
 
-  it(`should have the 'dashboard-app' title`, () => {
+  it(`should have the 'ipi-akademija-angular' title`, () => {
     const fixture = TestBed.createComponent(AppComponent);
     const app = fixture.componentInstance;
-    expect(app.title).toEqual('dashboard-app');
+    expect(app.title).toEqual('ipi-akademija-angular');
   });
 
   it('should render title', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
-    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, dashboard-app');
+    expect(compiled.querySelector('h1')?.textContent).toContain('Hello, ipi-akademija-angular');
   });
 });

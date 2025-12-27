@@ -1,0 +1,39 @@
+
+<footer class="footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-column">
+        <h3>IPI Akademija</h3>
+        <p>Platforma za obrazovanje i praćenje ličnog razvoja.</p>
+      </div>
+      <div class="footer-column">
+        <h4>Brzi linkovi</h4>
+        <ul>
+          <li><a routerLink="/" fragment="o-nama">O nama</a></li>
+          <li><a routerLink="/" fragment="programi">Programi</a></li>
+          <li><a routerLink="/" fragment="kontakt">Kontakt</a></li>
+          <li><a routerLink="/login">Prijava</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h4>Programi</h4>
+        <ul>
+          <li><a href="#">Informatika i računarstvo</a></li>
+          <li><a href="#">Tržišne komunikacije</a></li>
+          <li><a href="#">Informacione tehnologije</a></li>
+        </ul>
+      </div>
+      <div class="footer-column">
+        <h4>Newsletter</h4>
+        <p>Prijavite se za novosti</p>
+        <form class="newsletter-form" (submit)="onNewsletterSubmit($event)">
+          <input type="email" placeholder="Vaš email" [(ngModel)]="newsletterEmail" name="email">
+          <button type="submit" class="btn btn-small btn-primary">Prijavi se</button>
+        </form>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <p>&copy; 2025 IPI Akademija. Napravljeno za predmet Web programiranje.</p>
+    </div>
+  </div>
+</footer>
