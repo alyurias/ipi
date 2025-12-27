@@ -1,39 +1,97 @@
+<div class="fun-zone-wrapper">
+  <div class="fun-zone-layout">
+    <!-- SIDEBAR -->
+    <aside class="sidebar" [class.open]="sidebarOpen" [class.hidden]="!sidebarVisible">
+      <button class="sidebar-toggle" [class.close]="sidebarOpen" (click)="sidebarOpen ? hideSidebar() : toggleSidebar()">
+        <span class="hamburger-icon" [class.active]="sidebarOpen">
+          <span></span>
+          <span></span>
+          <span></span>
+        </span>
+      </button>
+      
+      <div class="sidebar-content">
+        <div class="logo-section">
+          <button class="btn-home" (click)="navigateToHome()">
+            <span>Početna</span>
+          </button>
+        </div>
 
-<app-header></app-header>
+        <nav class="sidebar-nav">
+          <a routerLink="/dashboard" routerLinkActive="active" class="nav-item">
+            <span>Dashboard</span>
+          </a>
+          <a routerLink="/fun-zone" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-item">
+            <span>Fun Zone</span>
+          </a>
+          <a routerLink="/statistics" routerLinkActive="active" class="nav-item">
+            <span>Statistika</span>
+          </a>
+          <a routerLink="/settings" routerLinkActive="active" class="nav-item">
+            <span>Postavke</span>
+          </a>
+        </nav>
 
-<div class="fun-zone-container">
-  <div class="container">
-    <div class="fun-zone-header">
-      <h1>🎮 Student Fun Zone</h1>
-      <p>Zabavite se dok učite!</p>
-    </div>
-
-    <div class="games-grid">
-      <div class="game-card">
-        <h3>🎲 Bingo</h3>
-        <p>Igrajte student bingo sa prijateljima</p>
-        <button class="btn btn-primary">Igraj Bingo</button>
+        <div class="sidebar-footer">
+          <button class="btn-logout" (click)="logout()">
+            <span>Odjavi se</span>
+          </button>
+        </div>
       </div>
+    </aside>
 
-      <div class="game-card">
-        <h3>❓ Kvizovi</h3>
-        <p>Testirajte svoje znanje</p>
-        <button class="btn btn-primary">Pokreni kviz</button>
-      </div>
+    <!-- Show Sidebar Button (when hidden) -->
+    @if (!sidebarVisible) {
+      <button class="btn-show-sidebar" (click)="showSidebar()">
+        <span class="hamburger-icon">
+          <span></span>
+          <span></span>
+          <span></span>
+        </span>
+      </button>
+    }
 
-      <div class="game-card">
-        <h3>🎨 Whiteboard</h3>
-        <p>Crtajte i dijelite ideje</p>
-        <button class="btn btn-primary">Otvori Whiteboard</button>
-      </div>
+    <!-- MAIN CONTENT -->
+    <main class="fun-zone-main" [class.sidebar-hidden]="!sidebarVisible">
+      <div class="container">
+        <div class="fun-zone-header">
+          <h1>Student Fun Zone</h1>
+          <p>Zabavite se dok učite!</p>
+        </div>
 
-      <div class="game-card">
-        <h3>📋 Kanban Board</h3>
-        <p>Organizujte zadatke</p>
-        <button class="btn btn-primary">Otvori Kanban</button>
+        <div class="games-grid">
+          <div class="game-card">
+            <h3>Bingo</h3>
+            <p>Igrajte student bingo sa prijateljima</p>
+            <button class="btn btn-primary">Igraj Bingo</button>
+          </div>
+
+          <div class="game-card">
+            <h3>Kvizovi</h3>
+            <p>Testirajte svoje znanje</p>
+            <button class="btn btn-primary">Pokreni kviz</button>
+          </div>
+
+          <div class="game-card">
+            <h3>Whiteboard</h3>
+            <p>Crtajte i dijelite ideje</p>
+            <button class="btn btn-primary">Otvori Whiteboard</button>
+          </div>
+
+          <div class="game-card">
+            <h3>Kanban Board</h3>
+            <p>Organizujte zadatke</p>
+            <button class="btn btn-primary">Otvori Kanban</button>
+          </div>
+        </div>
       </div>
-    </div>
+    </main>
   </div>
-</div>
 
-<app-footer></app-footer>
+  <!-- FOOTER -->
+  <footer class="fun-zone-footer">
+    <div class="footer-content">
+      <p>&copy; 2025 | Projekt za predmet Web programiranje</p>
+    </div>
+  </footer>
+</div>

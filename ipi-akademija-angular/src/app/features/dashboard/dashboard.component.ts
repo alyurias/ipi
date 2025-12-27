@@ -2,13 +2,12 @@ import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { DragDropModule } from '@angular/cdk/drag-drop';
-import { HeaderComponent } from '../../shared/components/header/header.component';
 import { FooterComponent } from '../../shared/components/footer/footer.component';
 import { AuthService } from '../../core/services/auth.service';
 import { ThemeService } from '../../core/services/theme.service';
 import { NotificationService } from '../../core/services/notification.service';
 
-
+// Import all tracker components
 import { SleepTrackerComponent } from '../trackers/sleep-tracker/sleep-tracker.component';
 import { StudyPlannerComponent } from '../trackers/study-planner/study-planner.component';
 import { FitnessPlannerComponent } from '../trackers/fitness-planner/fitness-planner.component';
@@ -34,10 +33,8 @@ interface Module {
   imports: [
     CommonModule, 
     RouterModule, 
-    HeaderComponent, 
     FooterComponent, 
     DragDropModule,
-   
     SleepTrackerComponent,
     StudyPlannerComponent,
     FitnessPlannerComponent,
@@ -61,18 +58,18 @@ export class DashboardComponent implements OnInit {
 
   currentUser = this.authService.currentUser;
   sidebarOpen = true;
+  sidebarVisible = true;
   modulesSelected = false;
   selectedModules: string[] = [];
 
+  // Removed habit tracker, calendar is now fixed
   availableModules: Module[] = [
-    { id: 'habit', name: 'Habit Tracker', icon: '✅', description: 'Pratite dnevne navike' },
     { id: 'sleep', name: 'Sleep Tracker', icon: '😴', description: 'Analizirajte san' },
     { id: 'study', name: 'Study Planner', icon: '📚', description: 'Organizujte učenje' },
     { id: 'fitness', name: 'Fitness Planner', icon: '💪', description: 'Yoga i vježbanje' },
     { id: 'tasks', name: 'Task Planner', icon: '📋', description: 'Upravljajte projektima' },
     { id: 'meal', name: 'Meal Planner', icon: '🍽️', description: 'Planirajte obroke' },
     { id: 'mood', name: 'Mood Tracker', icon: '😊', description: 'Pratite raspoloženje' },
-    { id: 'calendar', name: 'Calendar', icon: '📅', description: 'Kalendar događaja' },
     { id: 'finance', name: 'Finance Tracker', icon: '💰', description: 'Mini budžet' },
     { id: 'gratitude', name: 'Gratitude Journal', icon: '🙏', description: 'Zahvalnost dnevnik' },
     { id: 'reflection', name: 'Daily Reflection', icon: '✍️', description: 'Dnevna refleksija' },
@@ -100,11 +97,27 @@ export class DashboardComponent implements OnInit {
     this.sidebarOpen = !this.sidebarOpen;
   }
 
+  hideSidebar(): void {
+    this.sidebarVisible = false;
+    localStorage.setItem('sidebarHidden', 'true');
+  }
+
+  showSidebar(): void {
+    this.sidebarVisible = true;
+    localStorage.setItem('sidebarHidden', 'false');
+  }
+
   loadUserModules(): void {
     const saved = localStorage.getItem(`modules_${this.currentUser()?.uid}`);
     if (saved) {
       this.selectedModules = JSON.parse(saved);
       this.modulesSelected = true;
+    }
+    
+    // Check if sidebar was hidden
+    const sidebarHidden = localStorage.getItem('sidebarHidden');
+    if (sidebarHidden === 'true') {
+      this.sidebarVisible = false;
     }
   }
 
@@ -126,13 +139,12 @@ export class DashboardComponent implements OnInit {
     if (this.selectedModules.length === 3) {
       localStorage.setItem(`modules_${this.currentUser()?.uid}`, JSON.stringify(this.selectedModules));
       this.modulesSelected = true;
-      this.notificationService.success('Trackeri su uspješno odabrani! ');
+      this.notificationService.success('Trackeri su uspješno odabrani!');
     }
   }
 
-  changeModules(): void {
-    this.modulesSelected = false;
-    this.selectedModules = [];
+  navigateToHome(): void {
+    this.router.navigate(['/']);
   }
 
   async logout(): Promise<void> {
