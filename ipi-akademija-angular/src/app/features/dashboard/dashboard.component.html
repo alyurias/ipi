@@ -1,39 +1,185 @@
 
 <app-header></app-header>
 
-<div class="dashboard-container">
-  <div class="container">
-    <div class="dashboard-header">
-      <h1>Dobrodošli, {{ currentUser()?.name }}! 👋</h1>
-      <p>Vaš personalni dashboard</p>
+<div class="dashboard-layout">
+ 
+  <aside class="sidebar" [class.open]="sidebarOpen">
+    <button class="sidebar-toggle" (click)="toggleSidebar()">
+      <span>☰</span>
+    </button>
+    
+    <div class="sidebar-content">
+      <div class="user-profile">
+        <div class="user-avatar">
+          {{ getUserInitials() }}
+        </div>
+        <h3>{{ currentUser()?.name }}</h3>
+        <p>{{ getGreeting() }}</p>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a routerLink="/dashboard" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-item">
+          <span class="icon">📊</span>
+          <span>Dashboard</span>
+        </a>
+        <a routerLink="/fun-zone" routerLinkActive="active" class="nav-item">
+          <span class="icon">🎮</span>
+          <span>Fun Zone</span>
+        </a>
+        <a routerLink="/statistics" routerLinkActive="active" class="nav-item">
+          <span class="icon">📈</span>
+          <span>Statistika</span>
+        </a>
+        <a routerLink="/settings" routerLinkActive="active" class="nav-item">
+          <span class="icon">⚙️</span>
+          <span>Postavke</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="btn-logout" (click)="logout()">
+          <span>🚪</span>
+          Odjavi se
+        </button>
+      </div>
     </div>
+  </aside>
 
-    <div class="dashboard-grid">
-      <div class="dashboard-card">
-        <h3>📚 Trackeri</h3>
-        <p>Pratite svoje navike, učenje, spavanje i više</p>
-        <button class="btn btn-primary">Otvori trackere</button>
+  <!-- MAIN CONTENT -->
+  <main class="dashboard-main">
+    <div class="container">
+      <!-- Welcome Section -->
+      <div class="welcome-section">
+        <h1>{{ getGreeting() }}, {{ currentUser()?.name }}! 👋</h1>
+        <p>Dobrodošli nazad na vaš personalni dashboard</p>
       </div>
 
-      <div class="dashboard-card">
-        <h3>🎮 Student Fun Zone</h3>
-        <p>Igrajte Bingo, kvizove i još mnogo toga</p>
-        <button class="btn btn-primary" routerLink="/fun-zone">Idi na Fun Zone</button>
-      </div>
+    
+      @if (!modulesSelected) {
+        <div class="module-selector">
+          <h2>Odaberite 3 trackera za vaš dashboard</h2>
+          <p>Birajte trackere koji vam najviše odgovaraju</p>
 
-      <div class="dashboard-card">
-        <h3>📊 Statistika</h3>
-        <p>Analizirajte svoj napredak</p>
-        <button class="btn btn-primary">Pogledaj statistiku</button>
-      </div>
+          <div class="modules-grid">
+            @for (module of availableModules; track module.id) {
+              <div 
+                class="module-option" 
+                [class.selected]="isModuleSelected(module.id)"
+                [class.disabled]="!isModuleSelected(module.id) && selectedModules.length >= 3"
+                (click)="toggleModule(module.id)"
+              >
+                <div class="module-icon">{{ module.icon }}</div>
+                <h3>{{ module.name }}</h3>
+                <p>{{ module.description }}</p>
+                @if (isModuleSelected(module.id)) {
+                  <div class="selected-badge">✓</div>
+                }
+              </div>
+            }
+          </div>
 
-      <div class="dashboard-card">
-        <h3>⚙️ Postavke</h3>
-        <p>Prilagodite svoj profil i temu</p>
-        <button class="btn btn-primary">Postavke</button>
-      </div>
+          <div class="selector-footer">
+            <p>Odabrano: {{ selectedModules.length }}/3</p>
+            <button 
+              class="btn btn-primary btn-large" 
+              [disabled]="selectedModules.length !== 3"
+              (click)="confirmModules()"
+            >
+              Potvrdi izbor
+            </button>
+          </div>
+        </div>
+      }
+
+     
+      @if (modulesSelected) {
+        <div class="active-modules">
+          <div class="section-header">
+            <h2>Vaši trackeri</h2>
+            <button class="btn btn-secondary" (click)="changeModules()">
+              Promijeni trackere
+            </button>
+          </div>
+
+          <div class="modules-display" cdkDropListGroup>
+            @for (moduleId of selectedModules; track moduleId) {
+              <div 
+                class="module-card"
+                cdkDrag
+                cdkDragBoundary=".modules-display"
+              >
+                <div class="drag-handle" cdkDragHandle>⋮⋮</div>
+                
+                @switch (moduleId) {
+
+                  @case ('sleep') {
+                    <app-sleep-tracker></app-sleep-tracker>
+                  }
+                  @case ('study') {
+                    <app-study-planner></app-study-planner>
+                  }
+                  @case ('fitness') {
+                    <app-fitness-planner></app-fitness-planner>
+                  }
+                  @case ('tasks') {
+                    <app-task-planner></app-task-planner>
+                  }
+                  @case ('meal') {
+                    <app-meal-planner></app-meal-planner>
+                  }
+                  @case ('mood') {
+                    <app-mood-tracker></app-mood-tracker>
+                  }
+                  @case ('calendar') {
+                    <app-calendar-tracker></app-calendar-tracker>
+                  }
+                  @case ('finance') {
+                    <app-finance-tracker></app-finance-tracker>
+                  }
+                  @case ('gratitude') {
+                    <app-gratitude-journal></app-gratitude-journal>
+                  }
+                  @case ('reflection') {
+                    <app-daily-reflection></app-daily-reflection>
+                  }
+                  @case ('water') {
+                    <app-water-intake></app-water-intake>
+                  }
+                }
+              </div>
+            }
+          </div>
+        </div>
+
+     
+        <div class="quick-stats">
+          <h2>Brza statistika</h2>
+          <div class="stats-grid">
+            <div class="stat-card">
+              <span class="stat-icon">✅</span>
+              <h3>12</h3>
+              <p>Završenih zadataka</p>
+            </div>
+            <div class="stat-card">
+              <span class="stat-icon">🔥</span>
+              <h3>7</h3>
+              <p>Dnevni streak</p>
+            </div>
+            <div class="stat-card">
+              <span class="stat-icon">⏱️</span>
+              <h3>4.5h</h3>
+              <p>Vrijeme učenja</p>
+            </div>
+            <div class="stat-card">
+              <span class="stat-icon">😊</span>
+              <h3>8/10</h3>
+              <p>Raspoloženje</p>
+            </div>
+          </div>
+        </div>
+      }
     </div>
-  </div>
+  </main>
 </div>
 
 <app-footer></app-footer>

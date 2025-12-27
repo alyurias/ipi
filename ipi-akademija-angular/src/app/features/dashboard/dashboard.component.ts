@@ -1,26 +1,146 @@
-
 import { Component, OnInit, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { RouterModule } from '@angular/router';
+import { RouterModule, Router } from '@angular/router';
+import { DragDropModule } from '@angular/cdk/drag-drop';
 import { HeaderComponent } from '../../shared/components/header/header.component';
 import { FooterComponent } from '../../shared/components/footer/footer.component';
 import { AuthService } from '../../core/services/auth.service';
 import { ThemeService } from '../../core/services/theme.service';
+import { NotificationService } from '../../core/services/notification.service';
+
+
+import { SleepTrackerComponent } from '../trackers/sleep-tracker/sleep-tracker.component';
+import { StudyPlannerComponent } from '../trackers/study-planner/study-planner.component';
+import { FitnessPlannerComponent } from '../trackers/fitness-planner/fitness-planner.component';
+import { TaskPlannerComponent } from '../trackers/task-planner/task-planner.component';
+import { MealPlannerComponent } from '../trackers/meal-planner/meal-planner.component';
+import { MoodTrackerComponent } from '../trackers/mood-tracker/mood-tracker.component';
+import { CalendarTrackerComponent } from '../trackers/calendar-tracker/calendar-tracker.component';
+import { FinanceTrackerComponent } from '../trackers/finance-tracker/finance-tracker.component';
+import { GratitudeJournalComponent } from '../trackers/gratitude-journal/gratitude-journal.component';
+import { DailyReflectionComponent } from '../trackers/daily-reflection/daily-reflection.component';
+import { WaterIntakeComponent } from '../trackers/water-intake/water-intake.component';
+
+interface Module {
+  id: string;
+  name: string;
+  icon: string;
+  description: string;
+}
 
 @Component({
   selector: 'app-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, HeaderComponent, FooterComponent],
+  imports: [
+    CommonModule, 
+    RouterModule, 
+    HeaderComponent, 
+    FooterComponent, 
+    DragDropModule,
+   
+    SleepTrackerComponent,
+    StudyPlannerComponent,
+    FitnessPlannerComponent,
+    TaskPlannerComponent,
+    MealPlannerComponent,
+    MoodTrackerComponent,
+    CalendarTrackerComponent,
+    FinanceTrackerComponent,
+    GratitudeJournalComponent,
+    DailyReflectionComponent,
+    WaterIntakeComponent
+  ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.css'
 })
 export class DashboardComponent implements OnInit {
   private authService = inject(AuthService);
   private themeService = inject(ThemeService);
+  private notificationService = inject(NotificationService);
+  private router = inject(Router);
 
   currentUser = this.authService.currentUser;
+  sidebarOpen = true;
+  modulesSelected = false;
+  selectedModules: string[] = [];
+
+  availableModules: Module[] = [
+    { id: 'habit', name: 'Habit Tracker', icon: '✅', description: 'Pratite dnevne navike' },
+    { id: 'sleep', name: 'Sleep Tracker', icon: '😴', description: 'Analizirajte san' },
+    { id: 'study', name: 'Study Planner', icon: '📚', description: 'Organizujte učenje' },
+    { id: 'fitness', name: 'Fitness Planner', icon: '💪', description: 'Yoga i vježbanje' },
+    { id: 'tasks', name: 'Task Planner', icon: '📋', description: 'Upravljajte projektima' },
+    { id: 'meal', name: 'Meal Planner', icon: '🍽️', description: 'Planirajte obroke' },
+    { id: 'mood', name: 'Mood Tracker', icon: '😊', description: 'Pratite raspoloženje' },
+    { id: 'calendar', name: 'Calendar', icon: '📅', description: 'Kalendar događaja' },
+    { id: 'finance', name: 'Finance Tracker', icon: '💰', description: 'Mini budžet' },
+    { id: 'gratitude', name: 'Gratitude Journal', icon: '🙏', description: 'Zahvalnost dnevnik' },
+    { id: 'reflection', name: 'Daily Reflection', icon: '✍️', description: 'Dnevna refleksija' },
+    { id: 'water', name: 'Water Intake', icon: '💧', description: 'Praćenje hidratacije' }
+  ];
 
   ngOnInit(): void {
     this.themeService.applyUserTheme();
+    this.loadUserModules();
+  }
+
+  getGreeting(): string {
+    const hour = new Date().getHours();
+    if (hour < 12) return 'Dobro jutro';
+    if (hour < 18) return 'Dobar dan';
+    return 'Dobro veče';
+  }
+
+  getUserInitials(): string {
+    const name = this.currentUser()?.name || 'U';
+    return name.split(' ').map((n: string) => n[0]).join('').toUpperCase().slice(0, 2);
+  }
+
+  toggleSidebar(): void {
+    this.sidebarOpen = !this.sidebarOpen;
+  }
+
+  loadUserModules(): void {
+    const saved = localStorage.getItem(`modules_${this.currentUser()?.uid}`);
+    if (saved) {
+      this.selectedModules = JSON.parse(saved);
+      this.modulesSelected = true;
+    }
+  }
+
+  isModuleSelected(id: string): boolean {
+    return this.selectedModules.includes(id);
+  }
+
+  toggleModule(id: string): void {
+    const index = this.selectedModules.indexOf(id);
+    
+    if (index > -1) {
+      this.selectedModules.splice(index, 1);
+    } else if (this.selectedModules.length < 3) {
+      this.selectedModules.push(id);
+    }
+  }
+
+  confirmModules(): void {
+    if (this.selectedModules.length === 3) {
+      localStorage.setItem(`modules_${this.currentUser()?.uid}`, JSON.stringify(this.selectedModules));
+      this.modulesSelected = true;
+      this.notificationService.success('Trackeri su uspješno odabrani! ');
+    }
+  }
+
+  changeModules(): void {
+    this.modulesSelected = false;
+    this.selectedModules = [];
+  }
+
+  async logout(): Promise<void> {
+    if (confirm('Želite li se odjaviti?')) {
+      const result = await this.authService.logout();
+      if (result.success) {
+        this.notificationService.success(result.message);
+      }
+    }
   }
 }
