@@ -7,7 +7,7 @@ import { AuthService } from '../../core/services/auth.service';
 import { ThemeService } from '../../core/services/theme.service';
 import { NotificationService } from '../../core/services/notification.service';
 
-// Import all tracker components
+
 import { SleepTrackerComponent } from '../trackers/sleep-tracker/sleep-tracker.component';
 import { StudyPlannerComponent } from '../trackers/study-planner/study-planner.component';
 import { FitnessPlannerComponent } from '../trackers/fitness-planner/fitness-planner.component';
@@ -62,18 +62,18 @@ export class DashboardComponent implements OnInit {
   modulesSelected = false;
   selectedModules: string[] = [];
 
-  // Removed habit tracker, calendar is now fixed
+  
   availableModules: Module[] = [
-    { id: 'sleep', name: 'Sleep Tracker', icon: '😴', description: 'Analizirajte san' },
-    { id: 'study', name: 'Study Planner', icon: '📚', description: 'Organizujte učenje' },
-    { id: 'fitness', name: 'Fitness Planner', icon: '💪', description: 'Yoga i vježbanje' },
-    { id: 'tasks', name: 'Task Planner', icon: '📋', description: 'Upravljajte projektima' },
-    { id: 'meal', name: 'Meal Planner', icon: '🍽️', description: 'Planirajte obroke' },
-    { id: 'mood', name: 'Mood Tracker', icon: '😊', description: 'Pratite raspoloženje' },
-    { id: 'finance', name: 'Finance Tracker', icon: '💰', description: 'Mini budžet' },
-    { id: 'gratitude', name: 'Gratitude Journal', icon: '🙏', description: 'Zahvalnost dnevnik' },
-    { id: 'reflection', name: 'Daily Reflection', icon: '✍️', description: 'Dnevna refleksija' },
-    { id: 'water', name: 'Water Intake', icon: '💧', description: 'Praćenje hidratacije' }
+    { id: 'sleep', name: 'Sleep Tracker', icon: '', description: 'Pratite san' },
+    { id: 'study', name: 'Study Planner', icon: '', description: 'Organizujte učenje' },
+    { id: 'fitness', name: 'Fitness Planner', icon: '', description: 'Vježbanje' },
+    { id: 'tasks', name: 'Task Planner', icon: '', description: 'Upravljajte planovima' },
+    { id: 'meal', name: 'Meal Planner', icon: '', description: 'Planirajte obroke' },
+    { id: 'mood', name: 'Mood Tracker', icon: '', description: 'Pratite raspoloženje' },
+    { id: 'finance', name: 'Finance Tracker', icon: '', description: 'Budžet' },
+    { id: 'gratitude', name: 'Gratitude Journal', icon: '', description: 'Dnevnik zahvalnosti' },
+    { id: 'reflection', name: 'Daily Reflection', icon: '', description: 'Dnevna refleksija' },
+    { id: 'water', name: 'Water Intake', icon: '', description: 'Praćenje hidratacije' }
   ];
 
   ngOnInit(): void {
@@ -114,7 +114,7 @@ export class DashboardComponent implements OnInit {
       this.modulesSelected = true;
     }
     
-    // Check if sidebar was hidden
+    
     const sidebarHidden = localStorage.getItem('sidebarHidden');
     if (sidebarHidden === 'true') {
       this.sidebarVisible = false;

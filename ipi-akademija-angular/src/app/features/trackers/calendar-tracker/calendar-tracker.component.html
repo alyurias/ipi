@@ -1,1 +1,95 @@
-<p>calendar-tracker works!</p>
+<div class="calendar-container">
+
+  <div class="calendar-header">
+    <button class="nav-btn" (click)="previousMonth()">‹</button>
+    <h3>{{ monthNames[currentMonth] }} {{ currentYear }}</h3>
+    <button class="nav-btn" (click)="nextMonth()">›</button>
+  </div>
+
+
+  <div class="calendar-days-header">
+    @for (dayName of dayNames; track dayName) {
+      <div class="day-name">{{ dayName }}</div>
+    }
+  </div>
+
+  
+  <div class="calendar-grid">
+    @for (day of calendarDays; track day.date) {
+      <div 
+        class="calendar-day"
+        [class.current-month]="day.isCurrentMonth"
+        [class.today]="day.isToday"
+        [class.has-reminder]="day.hasReminder"
+        [class.other-month]="!day.isCurrentMonth"
+        (click)="selectDay(day)"
+        (mouseenter)="onDayMouseEnter(day)"
+        (mouseleave)="onDayMouseLeave()"
+      >
+        <span class="day-number">{{ day.day }}</span>
+
+      
+        @if (hoveredDay === day && day.hasReminder) {
+          <div class="reminder-tooltip">
+            @for (reminder of day.reminders; track reminder.id) {
+              <div class="tooltip-reminder">
+                <span>{{ reminder.text }}</span>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+  </div>
+</div>
+
+
+@if (showReminderModal && selectedDate) {
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>{{ formatDate(selectedDate) }}</h3>
+        <button class="close-btn" (click)="closeModal()">×</button>
+      </div>
+
+      <div class="modal-body">
+       
+        @if (getSelectedDateReminders().length > 0) {
+          <div class="reminders-list">
+            <h4>Podsjetnici:</h4>
+            @for (reminder of getSelectedDateReminders(); track reminder.id) {
+              <div class="reminder-item">
+                <span>{{ reminder.text }}</span>
+                <button 
+                  class="delete-btn" 
+                  (click)="deleteReminder(getDateString(selectedDate), reminder.id)"
+                >
+                  ×
+                </button>
+              </div>
+            }
+          </div>
+        }
+
+       
+        <div class="add-reminder">
+          <h4>Dodaj novi podsjetnik:</h4>
+          <input 
+            type="text" 
+            [(ngModel)]="newReminderText"
+            placeholder="Unesite podsjetnik..."
+            (keyup.enter)="addReminder()"
+            class="reminder-input"
+          />
+          <button 
+            class="btn btn-primary" 
+            (click)="addReminder()"
+            [disabled]="!newReminderText.trim()"
+          >
+            Dodaj
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+}

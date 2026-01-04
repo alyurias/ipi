@@ -1,6 +1,6 @@
 <div class="dashboard-wrapper">
   <div class="dashboard-layout">
-    <!-- SIDEBAR -->
+   
     <aside class="sidebar" [class.open]="sidebarOpen" [class.hidden]="!sidebarVisible">
       <button class="sidebar-toggle" [class.close]="sidebarOpen" (click)="sidebarOpen ? hideSidebar() : toggleSidebar()">
         <span class="hamburger-icon" [class.active]="sidebarOpen">
@@ -40,7 +40,7 @@
       </div>
     </aside>
 
-    <!-- Show Sidebar Button (when hidden) -->
+
     @if (!sidebarVisible) {
       <button class="btn-show-sidebar" (click)="showSidebar()">
         <span class="hamburger-icon">
@@ -51,16 +51,16 @@
       </button>
     }
 
-    <!-- MAIN CONTENT -->
+   
     <main class="dashboard-main" [class.sidebar-hidden]="!sidebarVisible">
       <div class="container">
-        <!-- Welcome Section -->
+     
         <div class="welcome-section">
           <h1>{{ getGreeting() }}, {{ currentUser()?.name }}!</h1>
           <p>Dobrodošli nazad na vaš personalni dashboard</p>
         </div>
 
-        <!-- MODULE SELECTOR (only shown if no modules selected) -->
+      
         @if (!modulesSelected) {
           <div class="module-selector">
             <h2>Odaberite 3 trackera za vaš dashboard</h2>
@@ -74,7 +74,6 @@
                   [class.disabled]="!isModuleSelected(module.id) && selectedModules.length >= 3"
                   (click)="toggleModule(module.id)"
                 >
-                  <div class="module-icon">{{ module.icon }}</div>
                   <h3>{{ module.name }}</h3>
                   <p>{{ module.description }}</p>
                   @if (isModuleSelected(module.id)) {
@@ -97,7 +96,7 @@
           </div>
         }
 
-        <!-- ACTIVE MODULES (shown after selection, no change option) -->
+
         @if (modulesSelected) {
           <div class="active-modules">
             <div class="section-header">
@@ -150,27 +149,23 @@
             </div>
           </div>
 
-        
+       
           <div class="quick-stats">
             <h2>Brza statistika</h2>
             <div class="stats-grid">
               <div class="stat-card">
-            
                 <h3>12</h3>
                 <p>Završenih zadataka</p>
               </div>
               <div class="stat-card">
-              
                 <h3>7</h3>
                 <p>Dnevni streak</p>
               </div>
               <div class="stat-card">
-        
                 <h3>4.5h</h3>
                 <p>Vrijeme učenja</p>
               </div>
               <div class="stat-card">
-         
                 <h3>8/10</h3>
                 <p>Raspoloženje</p>
               </div>
@@ -191,10 +186,10 @@
     }
   </div>
 
-
+  
   <footer class="dashboard-footer">
     <div class="footer-content">
-      <p>&copy; 2025  | Projekt za predmet Web programiranje</p>
+      <p>&copy; 2025 LifeTrack | Projekt za predmet Web programiranje</p>
     </div>
   </footer>
 </div>
