@@ -85,7 +85,7 @@
   background: var(--secondary, #45a049);
 }
 
-/* Hamburger Icon */
+
 .hamburger-icon {
   width: 20px;
   height: 16px;
@@ -105,7 +105,7 @@
   transition: all 0.3s ease;
 }
 
-/* X Animation when active */
+
 .hamburger-icon.active span:nth-child(1) {
   transform: translateY(7px) rotate(45deg);
 }
@@ -151,7 +151,7 @@
   transform: translateY(-2px);
 }
 
-/* SIDEBAR NAV */
+
 .sidebar-nav {
   flex: 1;
   display: flex;
@@ -285,7 +285,7 @@
   width: 100%;
 }
 
-/* BUTTONS */
+
 .btn {
   padding: 12px 24px;
   border: none;
@@ -308,7 +308,7 @@
   transform: translateY(-2px);
 }
 
-/* FOOTER */
+
 .fun-zone-footer {
   background: var(--surface, white);
   border-top: 1px solid var(--border, #e0e0e0);
@@ -329,7 +329,7 @@
   margin: 0;
 }
 
-/* RESPONSIVE */
+
 @media (max-width: 768px) {
   .sidebar {
     width: 200px;

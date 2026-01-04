@@ -40,7 +40,7 @@
       </div>
     </aside>
 
-    <!-- Show Sidebar Button (when hidden) -->
+   
     @if (!sidebarVisible) {
       <button class="btn-show-sidebar" (click)="showSidebar()">
         <span class="hamburger-icon">
@@ -51,7 +51,7 @@
       </button>
     }
 
-    <!-- MAIN CONTENT -->
+ 
     <main class="fun-zone-main" [class.sidebar-hidden]="!sidebarVisible">
       <div class="container">
         <div class="fun-zone-header">
@@ -88,7 +88,7 @@
     </main>
   </div>
 
-  <!-- FOOTER -->
+
   <footer class="fun-zone-footer">
     <div class="footer-content">
       <p>&copy; 2025 | Projekt za predmet Web programiranje</p>
