@@ -1,1 +1,137 @@
-<p>daily-reflection works!</p>
+<div class="tracker-module" (click)="openModal()">
+
+  <div class="module-header">
+    <h3>Dnevna Refleksija</h3>
+    <span class="status-badge" [class.completed]="todayEntry">
+      {{ todayEntry ? 'Završeno' : 'Nije završeno' }}
+    </span>
+  </div>
+
+  <div class="module-stats">
+    <div class="stat-item">
+      <span class="stat-label">Ukupno</span>
+      <span class="stat-value">{{ totalEntries }}</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Streak</span>
+      <span class="stat-value">{{ currentStreak }}</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Prosječno</span>
+      <span class="stat-value">{{ averageMood }}/5</span>
+    </div>
+  </div>
+
+  @if (todayEntry) {
+    <div class="today-preview">
+      <p class="preview-label">Današnji mood:</p>
+      <p class="preview-value">{{ getMoodLabel(todayEntry.mood) }}</p>
+    </div>
+  } @else {
+    <div class="call-to-action">
+      <p>Klikni za dodavanje</p>
+    </div>
+  }
+</div>
+
+
+@if (showModal) {
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Dnevna Refleksija</h2>
+        <button class="close-btn" (click)="closeModal()">×</button>
+      </div>
+
+      <div class="modal-body">
+ 
+        <div class="reflection-form">
+          <div class="form-group">
+            <label>Za šta si zahvalan/na danas?</label>
+            <textarea 
+              [(ngModel)]="gratitude"
+              placeholder="Unesite nešto za šta ste zahvalni..."
+              rows="3"
+            ></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Šta si postigao/la danas?</label>
+            <textarea 
+              [(ngModel)]="achievement"
+              placeholder="Opišite svoje postignuće..."
+              rows="3"
+            ></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Šta možeš poboljšati sutra?</label>
+            <textarea 
+              [(ngModel)]="improvement"
+              placeholder="Što možete poboljšati..."
+              rows="3"
+            ></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Kako se osjećaš danas?</label>
+            <div class="mood-selector">
+              @for (mood of [1, 2, 3, 4, 5]; track mood) {
+                <button
+                  type="button"
+                  class="mood-btn"
+                  [class.selected]="selectedMood === mood"
+                  (click)="selectedMood = mood"
+                >
+                  <span class="mood-number">{{ mood }}</span>
+                  <span class="mood-label">{{ getMoodLabel(mood) }}</span>
+                </button>
+              }
+            </div>
+          </div>
+
+          <button class="btn btn-primary btn-full" (click)="saveReflection()">
+            {{ todayEntry ? 'Ažuriraj' : 'Sačuvaj' }} Refleksiju
+          </button>
+        </div>
+
+   
+        @if (entries.length > 0) {
+          <div class="history-section">
+            <h3>Prethodne Refleksije</h3>
+            
+            <div class="entries-list">
+              @for (entry of entries; track entry.id) {
+                <div class="entry-card">
+                  <div class="entry-header">
+                    <span class="entry-date">{{ formatDate(entry.date) }}</span>
+                    <span class="entry-mood-label">{{ getMoodLabel(entry.mood) }}</span>
+                  </div>
+
+                  <div class="entry-content">
+                    <div class="entry-item">
+                      <strong>Zahvalnost:</strong>
+                      <p>{{ entry.gratitude }}</p>
+                    </div>
+                    <div class="entry-item">
+                      <strong>Postignuće:</strong>
+                      <p>{{ entry.achievement }}</p>
+                    </div>
+                    <div class="entry-item">
+                      <strong>Poboljšanje:</strong>
+                      <p>{{ entry.improvement }}</p>
+                    </div>
+                  </div>
+
+                  <button class="btn-delete" (click)="deleteEntry(entry.id)">
+                    Obriši
+                  </button>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+}
