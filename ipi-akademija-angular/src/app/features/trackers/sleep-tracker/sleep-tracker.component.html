@@ -1,1 +1,161 @@
-<p>sleep-tracker works!</p>
+<div class="tracker-module" (click)="openModal()">
+ 
+  <div class="module-header">
+    <h3>Praćenje Sna</h3>
+    <span class="status-badge" [class.completed]="todayEntry">
+      {{ todayEntry ? 'Završeno' : 'Nije završeno' }}
+    </span>
+  </div>
+
+  <div class="module-stats">
+    <div class="stat-item">
+      <span class="stat-label">Danas</span>
+      <span class="stat-value">{{ getTodayHours() }}h</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Prosječno</span>
+      <span class="stat-value">{{ averageHours }}h</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Najbolje</span>
+      <span class="stat-value">{{ bestSleep }}h</span>
+    </div>
+  </div>
+
+  @if (todayEntry) {
+    <div class="today-preview">
+      <p class="preview-label">Kvaliteta spavanja:</p>
+      <p class="preview-value">{{ getQualityLabel(todayEntry.quality) }}</p>
+    </div>
+  } @else {
+    <div class="call-to-action">
+      <p>Klikni za dodavanje</p>
+    </div>
+  }
+</div>
+
+
+@if (showModal) {
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Praćenje Sna</h2>
+        <button class="close-btn" (click)="closeModal()">×</button>
+      </div>
+
+      <div class="modal-body">
+       
+        <div class="sleep-form">
+          <div class="time-inputs">
+            <div class="form-group">
+              <label>Vrijeme spavanja</label>
+              <input 
+                type="time" 
+                [(ngModel)]="bedtime"
+                class="time-input"
+              />
+            </div>
+
+            <div class="form-group">
+              <label>Vrijeme buđenja</label>
+              <input 
+                type="time" 
+                [(ngModel)]="waketime"
+                class="time-input"
+              />
+            </div>
+          </div>
+
+          <div class="calculated-hours">
+            <span class="hours-label">Ukupno sati spavanja:</span>
+            <span class="hours-value">{{ calculateHours() }} h</span>
+          </div>
+
+          <div class="form-group">
+            <label>Kvaliteta spavanja</label>
+            <div class="quality-selector">
+              @for (q of [1, 2, 3, 4, 5]; track q) {
+                <button
+                  type="button"
+                  class="quality-btn"
+                  [class.selected]="quality === q"
+                  (click)="quality = q"
+                >
+                  <span class="quality-number">{{ q }}</span>
+                  <span class="quality-label">{{ getQualityLabel(q) }}</span>
+                </button>
+              }
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Šta ste sanjali?</label>
+            <textarea 
+              [(ngModel)]="note"
+              placeholder=""
+              rows="3"
+            ></textarea>
+          </div>
+
+          <button class="btn btn-primary btn-full" (click)="saveSleep()">
+            {{ todayEntry ? 'Ažuriraj' : 'Sačuvaj' }} San
+          </button>
+
+          <div class="stats-summary">
+            <div class="stat-summary-item">
+              <span class="stat-summary-label">Prosječno sati:</span>
+              <span class="stat-summary-value">{{ averageHours }}h</span>
+            </div>
+            <div class="stat-summary-item">
+              <span class="stat-summary-label">Prosječna kvaliteta sna:</span>
+              <span class="stat-summary-value">{{ averageQuality }}/5</span>
+            </div>
+          </div>
+        </div>
+
+      
+        @if (entries.length > 0) {
+          <div class="history-section">
+            <h3>Prethodni Unosi</h3>
+            
+            <div class="entries-list">
+              @for (entry of entries; track entry.id) {
+                <div class="entry-card">
+                  <div class="entry-header">
+                    <span class="entry-date">{{ formatDate(entry.date) }}</span>
+                    <span class="entry-hours">{{ entry.hours }}h</span>
+                  </div>
+
+                  <div class="entry-details">
+                    <div class="entry-detail-item">
+                      <span class="detail-label">Spavanje:</span>
+                      <span class="detail-value">{{ formatTime(entry.bedtime) }}</span>
+                    </div>
+                    <div class="entry-detail-item">
+                      <span class="detail-label">Buđenje:</span>
+                      <span class="detail-value">{{ formatTime(entry.waketime) }}</span>
+                    </div>
+                    <div class="entry-detail-item">
+                      <span class="detail-label">Kvaliteta:</span>
+                      <span class="detail-value">{{ getQualityLabel(entry.quality) }}</span>
+                    </div>
+                  </div>
+
+                  @if (entry.note) {
+                    <div class="entry-note">
+                      <p>{{ entry.note }}</p>
+                    </div>
+                  }
+
+                  <button class="btn-delete" (click)="deleteEntry(entry.id)">
+                    Obriši
+                  </button>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+}
