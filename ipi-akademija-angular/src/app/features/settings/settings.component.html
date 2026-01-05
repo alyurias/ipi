@@ -1,0 +1,247 @@
+<div class="settings-wrapper">
+  <div class="settings-layout">
+
+    <aside class="sidebar" [class.open]="sidebarOpen" [class.hidden]="!sidebarVisible">
+      <button class="sidebar-toggle" [class.close]="sidebarOpen" (click)="sidebarOpen ? hideSidebar() : toggleSidebar()">
+        <span class="hamburger-icon" [class.active]="sidebarOpen">
+          <span></span>
+          <span></span>
+          <span></span>
+        </span>
+      </button>
+      
+      <div class="sidebar-content">
+        <div class="logo-section">
+          <button class="btn-home" (click)="navigateToHome()">
+            <span>Početna</span>
+          </button>
+        </div>
+
+        <nav class="sidebar-nav">
+          <a routerLink="/dashboard" routerLinkActive="active" class="nav-item">
+            <span>Dashboard</span>
+          </a>
+          <a routerLink="/fun-zone" routerLinkActive="active" class="nav-item">
+            <span>Fun Zone</span>
+          </a>
+          <a routerLink="/statistics" routerLinkActive="active" class="nav-item">
+            <span>Statistika</span>
+          </a>
+          <a routerLink="/settings" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}" class="nav-item">
+            <span>Postavke</span>
+          </a>
+        </nav>
+
+        <div class="sidebar-footer">
+          <button class="btn-logout" (click)="logout()">
+            <span>Odjavi se</span>
+          </button>
+        </div>
+      </div>
+    </aside>
+
+    
+    @if (!sidebarVisible) {
+      <button class="btn-show-sidebar" (click)="showSidebar()">
+        <span class="hamburger-icon">
+          <span></span>
+          <span></span>
+          <span></span>
+        </span>
+      </button>
+    }
+
+
+    <main class="settings-main" [class.sidebar-hidden]="!sidebarVisible">
+      <div class="container">
+        <div class="settings-header">
+          <h1>Postavke</h1>
+          <p>Upravljajte svojim nalogom i preferencijama</p>
+        </div>
+
+        
+        <div class="settings-section">
+          <h2>Korisnički Nalog</h2>
+          
+          <div class="setting-item">
+            <div class="setting-label">
+              <h3>Korisničko ime</h3>
+              <p>Vaše prikazano ime na platformi</p>
+            </div>
+            
+            @if (!isEditingUsername) {
+              <div class="setting-value">
+                <span class="current-value">{{ currentUser()?.name }}</span>
+                <button class="btn btn-secondary" (click)="startEditingUsername()">
+                  Promijeni
+                </button>
+              </div>
+            } @else {
+              <div class="setting-edit">
+                <input 
+                  type="text" 
+                  [(ngModel)]="newUsername"
+                  placeholder="Unesite novo ime..."
+                  class="setting-input"
+                  (keyup.enter)="saveUsername()"
+                />
+                <div class="edit-actions">
+                  <button class="btn btn-primary" (click)="saveUsername()">
+                    Sačuvaj
+                  </button>
+                  <button class="btn btn-cancel" (click)="cancelEditingUsername()">
+                    Otkaži
+                  </button>
+                </div>
+              </div>
+            }
+          </div>
+
+          <div class="setting-item">
+            <div class="setting-label">
+              <h3>Email</h3>
+              <p>Vaša email adresa</p>
+            </div>
+            <div class="setting-value">
+              <span class="current-value">{{ currentUser()?.email }}</span>
+            </div>
+          </div>
+        </div>
+
+  
+        <div class="settings-section">
+          <h2>Tema</h2>
+          <p class="section-description">Odaberite temu koja vam se sviđa</p>
+          
+          <div class="themes-grid">
+            @for (theme of availableThemes; track theme.id) {
+              <div 
+                class="theme-option"
+                [class.selected]="selectedTheme === theme.id"
+                (click)="changeTheme(theme.id)"
+              >
+                <div class="theme-preview" [style.background]="'linear-gradient(135deg, ' + theme.colors.primary + ' 0%, ' + theme.colors.secondary + ' 100%)'">
+                  @if (selectedTheme === theme.id) {
+                    <span class="check-icon">✓</span>
+                  }
+                </div>
+                <span class="theme-name">{{ theme.name }}</span>
+              </div>
+            }
+          </div>
+        </div>
+
+    
+        <div class="settings-section">
+          <h2>Trackeri</h2>
+          
+          <div class="setting-item">
+            <div class="setting-label">
+              <h3>Resetuj odabrane trackere</h3>
+              <p>Omogućava vam da ponovo odaberete 3 trackera za dashboard</p>
+            </div>
+            <div class="setting-value">
+              <button class="btn btn-warning" (click)="openModulesResetModal()">
+                Resetuj Trackere
+              </button>
+            </div>
+          </div>
+        </div>
+
+        
+        <div class="settings-section danger-zone">
+          <h2>Opasna Zona</h2>
+          
+          <div class="setting-item">
+            <div class="setting-label">
+              <h3>Obriši Nalog</h3>
+              <p>Trajno obrišite vaš nalog i sve podatke. Ova akcija je nepovratna.</p>
+            </div>
+            <div class="setting-value">
+              <button class="btn btn-danger" (click)="openDeleteModal()">
+                Obriši Nalog
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </main>
+  </div>
+
+
+  <footer class="settings-footer">
+    <div class="footer-content">
+      <p>&copy; 2025 LifeTrack | Projekt za predmet Web programiranje</p>
+    </div>
+  </footer>
+</div>
+
+
+@if (showModulesResetModal) {
+  <div class="modal-overlay" (click)="closeModulesResetModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Resetuj Trackere</h3>
+        <button class="close-btn" (click)="closeModulesResetModal()">×</button>
+      </div>
+      
+      <div class="modal-body">
+        <p>Da li ste sigurni da želite resetovati odabrane trackere?</p>
+        <p class="modal-warning">Morat ćete ponovo odabrati 3 trackera na dashboard-u.</p>
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn btn-cancel" (click)="closeModulesResetModal()">
+          Otkaži
+        </button>
+        <button class="btn btn-warning" (click)="confirmModulesReset()">
+          Resetuj
+        </button>
+      </div>
+    </div>
+  </div>
+}
+
+
+@if (showDeleteModal) {
+  <div class="modal-overlay" (click)="closeDeleteModal()">
+    <div class="modal-content modal-danger" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h3>Obriši Nalog</h3>
+        <button class="close-btn" (click)="closeDeleteModal()">×</button>
+      </div>
+      
+      <div class="modal-body">
+        <p class="modal-warning">⚠️ UPOZORENJE: Ova akcija je NEPOVRATNA!</p>
+        <p>Brisanjem naloga trajno gubite:</p>
+        <ul class="danger-list">
+          <li>Sve odabrane trackere</li>
+          <li>Sve kalendar podsjetnike</li>
+          <li>Sve postavke i preference</li>
+          <li>Pristup svim funkcijama</li>
+        </ul>
+        
+        <p class="confirm-instruction">Da potvrdite, unesite riječ <strong>OBRIŠI</strong> ispod:</p>
+        <input 
+          type="text" 
+          [(ngModel)]="deleteConfirmText"
+          placeholder="Unesite OBRIŠI"
+          class="danger-input"
+        />
+      </div>
+      
+      <div class="modal-footer">
+        <button class="btn btn-cancel" (click)="closeDeleteModal()">
+          Otkaži
+        </button>
+        <button 
+          class="btn btn-danger" 
+          (click)="confirmDeleteAccount()"
+          [disabled]="deleteConfirmText !== 'OBRIŠI'"
+        >
+          Trajno Obriši Nalog
+        </button>
+      </div>
+    </div>
+  </div>
+}

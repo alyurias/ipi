@@ -1,4 +1,3 @@
-
 import { Injectable, inject, signal } from '@angular/core';
 import { Router } from '@angular/router';
 import { 
@@ -15,7 +14,8 @@ import {
   doc, 
   setDoc, 
   getDoc,
-  updateDoc
+  updateDoc,
+  deleteDoc
 } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 
@@ -236,6 +236,61 @@ export class AuthService {
     return this.currentUser();
   }
 
+  // metode za postavke
+  async updateUserProfile(updates: Partial<UserData>): Promise<void> {
+    const user = this.currentUser();
+    if (!user) {
+      throw new Error('No user logged in');
+    }
+
+    try {
+   
+      await updateDoc(doc(this.firestore, 'users', user.uid), updates);
+      
+      
+      this.currentUser.set({ ...user, ...updates });
+    } catch (error) {
+      console.error('Error updating user profile:', error);
+      throw error;
+    }
+  }
+
+
+  async deleteUserAccount(): Promise<{ success: boolean; message: string }> {
+    try {
+      const firebaseUser = this.auth.currentUser;
+      if (!firebaseUser) {
+        throw new Error('No user logged in');
+      }
+
+      const uid = firebaseUser.uid;
+
+   
+      const userDocRef = doc(this.firestore, 'users', uid);
+      const trackerDocRef = doc(this.firestore, 'userTrackerData', uid);
+      
+      await deleteDoc(userDocRef);
+      await deleteDoc(trackerDocRef);
+      
+
+      await firebaseUser.delete();
+      
+  
+      this.currentUser.set(null);
+      
+      return {
+        success: true,
+        message: 'Nalog je uspješno obrisan'
+      };
+    } catch (error: any) {
+      console.error('Error deleting account:', error);
+      return {
+        success: false,
+        message: this.getErrorMessage(error)
+      };
+    }
+  }
+
   private getErrorMessage(error: any): string {
     switch (error.code) {
       case 'auth/email-already-in-use':
@@ -249,6 +304,8 @@ export class AuthService {
         return 'Pogrešan email ili lozinka!';
       case 'auth/too-many-requests':
         return 'Previše pokušaja. Pokušajte ponovo kasnije.';
+      case 'auth/requires-recent-login':
+        return 'Molimo prijavite se ponovo da potvrdite akciju.';
       default:
         return error.message || 'Došlo je do greške';
     }

@@ -1,4 +1,3 @@
-
 import { Routes } from '@angular/router';
 import { authGuard } from './core/guards/auth.guard';
 
@@ -23,6 +22,11 @@ export const routes: Routes = [
   {
     path: 'fun-zone',
     loadComponent: () => import('./features/fun-zone/fun-zone.component').then(m => m.FunZoneComponent),
+    canActivate: [authGuard]
+  },
+  {
+    path: 'settings',
+    loadComponent: () => import('./features/settings/settings.component').then(m => m.SettingsComponent),
     canActivate: [authGuard]
   },
   {
