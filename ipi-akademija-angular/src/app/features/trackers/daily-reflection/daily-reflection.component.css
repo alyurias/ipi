@@ -367,27 +367,16 @@
 }
 
 .entry-content {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
   margin-bottom: 12px;
 }
 
-.entry-item strong {
-  display: block;
-  font-size: 0.8rem;
-  color: var(--text-muted, #666);
-  margin-bottom: 4px;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
-  font-weight: 600;
-}
-
-.entry-item p {
+.entry-content p {
   font-size: 0.9rem;
   color: var(--text, #333);
-  line-height: 1.5;
+  line-height: 1.6;
   margin: 0;
+  white-space: pre-wrap;
+  word-wrap: break-word;
 }
 
 .btn-delete {

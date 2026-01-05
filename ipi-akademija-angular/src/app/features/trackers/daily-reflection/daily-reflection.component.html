@@ -1,7 +1,7 @@
 <div class="tracker-module" (click)="openModal()">
 
   <div class="module-header">
-    <h3>Dnevna Refleksija</h3>
+    <h3>Dnevni Osvrt</h3>
     <span class="status-badge" [class.completed]="todayEntry">
       {{ todayEntry ? 'Završeno' : 'Nije završeno' }}
     </span>
@@ -39,37 +39,19 @@
   <div class="modal-overlay" (click)="closeModal()">
     <div class="modal-container" (click)="$event.stopPropagation()">
       <div class="modal-header">
-        <h2>Dnevna Refleksija</h2>
+        <h2>Dnevni Osvrt</h2>
         <button class="close-btn" (click)="closeModal()">×</button>
       </div>
 
       <div class="modal-body">
- 
+        <!-- Form -->
         <div class="reflection-form">
           <div class="form-group">
-            <label>Za šta si zahvalan/na danas?</label>
+            <label>Kako je prošao tvoj dan?</label>
             <textarea 
-              [(ngModel)]="gratitude"
-              placeholder="Unesite nešto za šta ste zahvalni..."
-              rows="3"
-            ></textarea>
-          </div>
-
-          <div class="form-group">
-            <label>Šta si postigao/la danas?</label>
-            <textarea 
-              [(ngModel)]="achievement"
-              placeholder="Opišite svoje postignuće..."
-              rows="3"
-            ></textarea>
-          </div>
-
-          <div class="form-group">
-            <label>Šta možeš poboljšati sutra?</label>
-            <textarea 
-              [(ngModel)]="improvement"
-              placeholder="Što možete poboljšati..."
-              rows="3"
+              [(ngModel)]="reflection"
+              placeholder="Napiši šta si danas radio/la, kako si se osjećao/la, šta si naučio/la..."
+              rows="6"
             ></textarea>
           </div>
 
@@ -91,14 +73,14 @@
           </div>
 
           <button class="btn btn-primary btn-full" (click)="saveReflection()">
-            {{ todayEntry ? 'Ažuriraj' : 'Sačuvaj' }} Refleksiju
+            {{ todayEntry ? 'Ažuriraj' : 'Sačuvaj' }} Osvrt
           </button>
         </div>
 
-   
+
         @if (entries.length > 0) {
           <div class="history-section">
-            <h3>Prethodne Refleksije</h3>
+            <h3>Prethodni Osvreti</h3>
             
             <div class="entries-list">
               @for (entry of entries; track entry.id) {
@@ -109,18 +91,7 @@
                   </div>
 
                   <div class="entry-content">
-                    <div class="entry-item">
-                      <strong>Zahvalnost:</strong>
-                      <p>{{ entry.gratitude }}</p>
-                    </div>
-                    <div class="entry-item">
-                      <strong>Postignuće:</strong>
-                      <p>{{ entry.achievement }}</p>
-                    </div>
-                    <div class="entry-item">
-                      <strong>Poboljšanje:</strong>
-                      <p>{{ entry.improvement }}</p>
-                    </div>
+                    <p>{{ entry.reflection }}</p>
                   </div>
 
                   <button class="btn-delete" (click)="deleteEntry(entry.id)">

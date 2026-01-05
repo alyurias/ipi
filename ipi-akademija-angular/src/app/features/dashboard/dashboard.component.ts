@@ -72,7 +72,7 @@ export class DashboardComponent implements OnInit {
     { id: 'mood', name: 'Mood Tracker', icon: '', description: 'Pratite raspoloženje' },
     { id: 'finance', name: 'Finance Tracker', icon: '', description: 'Budžet' },
     { id: 'gratitude', name: 'Gratitude Journal', icon: '', description: 'Dnevnik zahvalnosti' },
-    { id: 'reflection', name: 'Daily Reflection', icon: '', description: 'Dnevna refleksija' },
+    { id: 'reflection', name: 'Daily Reflection', icon: '', description: 'Dnevni osvrt' },
     { id: 'water', name: 'Water Intake', icon: '', description: 'Praćenje hidratacije' }
   ];
 

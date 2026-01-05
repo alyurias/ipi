@@ -6,10 +6,8 @@ import { AuthService } from '../../../core/services/auth.service';
 interface ReflectionEntry {
   id: string;
   date: string;
-  gratitude: string;
-  achievement: string;
-  improvement: string;
-  mood: number; 
+  reflection: string;
+  mood: number;
   createdAt: Date;
 }
 
@@ -26,16 +24,12 @@ export class DailyReflectionComponent implements OnInit {
 
   showModal: boolean = false;
 
-  
-  gratitude: string = '';
-  achievement: string = '';
-  improvement: string = '';
+  reflection: string = '';
   selectedMood: number = 3;
 
-
+ 
   entries: ReflectionEntry[] = [];
   todayEntry: ReflectionEntry | null = null;
-
 
   totalEntries: number = 0;
   currentStreak: number = 0;
@@ -63,9 +57,7 @@ export class DailyReflectionComponent implements OnInit {
     this.todayEntry = this.entries.find(e => e.date === today) || null;
 
     if (this.todayEntry) {
-      this.gratitude = this.todayEntry.gratitude;
-      this.achievement = this.todayEntry.achievement;
-      this.improvement = this.todayEntry.improvement;
+      this.reflection = this.todayEntry.reflection;
       this.selectedMood = this.todayEntry.mood;
     }
   }
@@ -82,25 +74,21 @@ export class DailyReflectionComponent implements OnInit {
     const userId = this.authService.currentUser()?.uid;
     if (!userId) return;
 
-    if (!this.gratitude.trim() || !this.achievement.trim() || !this.improvement.trim()) {
-      alert('Molimo popunite sva polja!');
+    if (!this.reflection.trim()) {
+      alert('Molimo unesite dnevni osvrt!');
       return;
     }
 
     const today = new Date().toISOString().split('T')[0];
 
     if (this.todayEntry) {
-      this.todayEntry.gratitude = this.gratitude.trim();
-      this.todayEntry.achievement = this.achievement.trim();
-      this.todayEntry.improvement = this.improvement.trim();
+      this.todayEntry.reflection = this.reflection.trim();
       this.todayEntry.mood = this.selectedMood;
     } else {
       const newEntry: ReflectionEntry = {
         id: Date.now().toString(),
         date: today,
-        gratitude: this.gratitude.trim(),
-        achievement: this.achievement.trim(),
-        improvement: this.improvement.trim(),
+        reflection: this.reflection.trim(),
         mood: this.selectedMood,
         createdAt: new Date()
       };
@@ -139,9 +127,7 @@ export class DailyReflectionComponent implements OnInit {
   }
 
   clearForm(): void {
-    this.gratitude = '';
-    this.achievement = '';
-    this.improvement = '';
+    this.reflection = '';
     this.selectedMood = 3;
   }
 
