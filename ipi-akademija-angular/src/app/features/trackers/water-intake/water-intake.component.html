@@ -1,1 +1,145 @@
-<p>water-intake works!</p>
+<div class="tracker-module" (click)="openModal()">
+
+  <div class="module-header">
+    <h3>Unos Vode</h3>
+    <span class="status-badge" [class.completed]="todayEntry && todayEntry.glasses >= dailyGoal">
+      {{ todayEntry && todayEntry.glasses >= dailyGoal ? 'Cilj postignut' : 'U toku' }}
+    </span>
+  </div>
+
+  <div class="module-stats">
+    <div class="stat-item">
+      <span class="stat-label">Danas</span>
+      <span class="stat-value">{{ todayEntry?.glasses || 0 }}/{{ dailyGoal }}</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Sedmica</span>
+      <span class="stat-value">{{ totalGlassesWeek }}</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Prosječno</span>
+      <span class="stat-value">{{ averageGlasses }}</span>
+    </div>
+  </div>
+
+  @if (todayEntry) {
+    <div class="progress-bar-container">
+      <div class="progress-bar">
+        <div class="progress-fill" [style.width.%]="getTodayProgress()"></div>
+      </div>
+      <p class="progress-text">{{ getTodayProgress() }}% dnevnog cilja</p>
+    </div>
+  } @else {
+    <div class="call-to-action">
+      <p>Klikni za dodavanje</p>
+    </div>
+  }
+</div>
+
+
+@if (showModal) {
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Unos Vode</h2>
+        <button class="close-btn" (click)="closeModal()">×</button>
+      </div>
+
+      <div class="modal-body">
+       
+        <div class="water-form">
+          <div class="daily-goal-section">
+            <label>Dnevni cilj (čaša)</label>
+            <div class="goal-input-group">
+              <input 
+                type="number" 
+                [(ngModel)]="dailyGoal" 
+                min="1" 
+                max="20"
+                (change)="saveGoal()"
+              />
+              <span class="goal-label">čaša ({{ dailyGoal * 0.25 }}L)</span>
+            </div>
+          </div>
+
+          <div class="glasses-counter">
+            <h3>Danas si popio/la</h3>
+            <div class="counter-display">
+              <button class="counter-btn" (click)="removeGlass()">−</button>
+              <div class="counter-value">
+                <span class="glasses-number">{{ glasses }}</span>
+                <span class="glasses-label">čaša ({{ getLiters() }}L)</span>
+              </div>
+              <button class="counter-btn" (click)="addGlass()">+</button>
+            </div>
+
+            <div class="progress-bar-large">
+              <div class="progress-fill" [style.width.%]="getTodayProgress()"></div>
+              <span class="progress-percentage">{{ getTodayProgress() }}%</span>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Napomena (opcionalno)</label>
+            <textarea 
+              [(ngModel)]="note"
+              placeholder="Npr. 'Popio prije treninga', 'Dodatna voda tokom vježbe'..."
+              rows="3"
+              (blur)="saveWater()"
+            ></textarea>
+          </div>
+
+          <div class="quick-stats">
+            <div class="quick-stat-item">
+              
+              <div>
+                <p class="stat-number">{{ goalAchievedDays }}</p>
+                <p class="stat-label">Dana sa ciljem</p>
+              </div>
+            </div>
+            <div class="quick-stat-item">
+             
+              <div>
+                <p class="stat-number">{{ currentStreak }}</p>
+                <p class="stat-label">Trenutni streak</p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+       
+        @if (entries.length > 0) {
+          <div class="history-section">
+            <h3>Prethodni Unosi</h3>
+            
+            <div class="entries-list">
+              @for (entry of entries; track entry.id) {
+                <div class="entry-card">
+                  <div class="entry-header">
+                    <span class="entry-date">{{ formatDate(entry.date) }}</span>
+                    <span class="entry-glasses">{{ entry.glasses }} čaša ({{ entry.glasses * 0.25 }}L)</span>
+                  </div>
+
+                  @if (entry.note) {
+                    <div class="entry-note">
+                      <p>{{ entry.note }}</p>
+                    </div>
+                  }
+
+                  <div class="entry-footer">
+                    <span class="goal-indicator" [class.achieved]="entry.glasses >= dailyGoal">
+                      {{ entry.glasses >= dailyGoal ? '✓ Cilj postignut' : '○ Cilj nije postignut' }}
+                    </span>
+                    <button class="btn-delete" (click)="deleteEntry(entry.id)">
+                      Obriši
+                    </button>
+                  </div>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+}

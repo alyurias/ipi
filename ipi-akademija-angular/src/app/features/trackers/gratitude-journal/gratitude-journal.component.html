@@ -1,1 +1,141 @@
-<p>gratitude-journal works!</p>
+<div class="tracker-module" (click)="openModal()">
+
+  <div class="module-header">
+    <h3>Dnevnik Zahvalnosti</h3>
+    <span class="status-badge" [class.completed]="todayEntry">
+      {{ todayEntry ? 'Završeno' : 'Nije završeno' }}
+    </span>
+  </div>
+
+  <div class="module-stats">
+    <div class="stat-item">
+      <span class="stat-label">Ukupno</span>
+      <span class="stat-value">{{ totalEntries }}</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Trenutni</span>
+      <span class="stat-value">{{ currentStreak }}</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Najduži</span>
+      <span class="stat-value">{{ longestStreak }}</span>
+    </div>
+  </div>
+
+  @if (todayEntry) {
+    <div class="today-preview">
+      <p class="preview-label">Danas:</p>
+      <p class="preview-value">{{ getTodayPreview() }}</p>
+    </div>
+  } @else {
+    <div class="call-to-action">
+      <p>Klikni za dodavanje</p>
+    </div>
+  }
+</div>
+
+
+@if (showModal) {
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Dnevnik Zahvalnosti</h2>
+        <button class="close-btn" (click)="closeModal()">×</button>
+      </div>
+
+      <div class="modal-body">
+      
+        <div class="gratitude-form">
+          <p class="form-instruction"></p>
+
+          <div class="form-group">
+            <label>
+              <span class="number-badge">1</span>
+              Čemu se raduješ danas?
+            </label>
+            <textarea 
+              [(ngModel)]="gratitude1"
+            
+              rows="3"
+            ></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>
+              <span class="number-badge">2</span>
+            Danas smo naučili
+            </label>
+            <textarea 
+              [(ngModel)]="gratitude2"
+            
+              rows="3"
+            ></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>
+              <span class="number-badge">3</span>
+              Dnevne afirmacije
+            </label>
+            <textarea 
+              [(ngModel)]="gratitude3"
+           
+              rows="3"
+            ></textarea>
+          </div>
+
+          <button class="btn btn-primary btn-full" (click)="saveGratitude()">
+            {{ todayEntry ? 'Ažuriraj' : 'Sačuvaj' }} 
+          </button>
+
+          <div class="streak-info">
+            <div class="streak-item">
+              <span class="streak-label">Trenutni niz:</span>
+              <span class="streak-value">{{ currentStreak }} dana</span>
+            </div>
+            <div class="streak-item">
+              <span class="streak-label">Najduži niz:</span>
+              <span class="streak-value">{{ longestStreak }} dana</span>
+            </div>
+          </div>
+        </div>
+
+  
+        @if (entries.length > 0) {
+          <div class="history-section">
+            <h3>Prethodni zapisi</h3>
+            
+            <div class="entries-list">
+              @for (entry of entries; track entry.id) {
+                <div class="entry-card">
+                  <div class="entry-header">
+                    <span class="entry-date">{{ formatDate(entry.date) }}</span>
+                  </div>
+
+                  <div class="gratitude-list">
+                    <div class="gratitude-item">
+                      <span class="gratitude-number">1</span>
+                      <p>{{ entry.gratitude1 }}</p>
+                    </div>
+                    <div class="gratitude-item">
+                      <span class="gratitude-number">2</span>
+                      <p>{{ entry.gratitude2 }}</p>
+                    </div>
+                    <div class="gratitude-item">
+                      <span class="gratitude-number">3</span>
+                      <p>{{ entry.gratitude3 }}</p>
+                    </div>
+                  </div>
+
+                  <button class="btn-delete" (click)="deleteEntry(entry.id)">
+                    Obriši
+                  </button>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+}
