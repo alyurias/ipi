@@ -1,1 +1,174 @@
-<p>study-planner works!</p>
+<div class="tracker-module" (click)="openModal()">
+  
+  <div class="module-header">
+    <h3>Planer Učenja</h3>
+    <span class="status-badge" [class.completed]="todayEntries.length > 0">
+      {{ todayEntries.length > 0 ? 'Ima unosa' : 'Nema unosa' }}
+    </span>
+  </div>
+
+  <div class="module-stats">
+    <div class="stat-item">
+      <span class="stat-label">Danas</span>
+      <span class="stat-value">{{ getTodayTotal() }}</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Sedmica</span>
+      <span class="stat-value">{{ totalHoursWeek }}h</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Mjesec</span>
+      <span class="stat-value">{{ totalHoursMonth }}h</span>
+    </div>
+  </div>
+
+  @if (todayEntries.length > 0) {
+    <div class="today-preview">
+      <p class="preview-label">Najviše učen predmet:</p>
+      <p class="preview-value">{{ mostStudiedSubject }}</p>
+    </div>
+  } @else {
+    <div class="call-to-action">
+      <p>Klikni za dodavanje</p>
+    </div>
+  }
+</div>
+
+
+@if (showModal) {
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Planer Učenja</h2>
+        <button class="close-btn" (click)="closeModal()">×</button>
+      </div>
+
+      <div class="modal-body">
+       
+        <div class="study-form">
+          <div class="form-group">
+            <label>Predmet</label>
+            <input 
+              type="text" 
+              [(ngModel)]="subject"
+              placeholder="Matematika, Web programiranje..."
+              class="text-input"
+            />
+          </div>
+
+          <div class="time-inputs">
+            <div class="form-group">
+              <label>Sati</label>
+              <input 
+                type="number" 
+                [(ngModel)]="hours"
+                min="0"
+                max="24"
+                class="number-input"
+              />
+            </div>
+
+            <div class="form-group">
+              <label>Minuta</label>
+              <input 
+                type="number" 
+                [(ngModel)]="minutes"
+                min="0"
+                max="59"
+                class="number-input"
+              />
+            </div>
+          </div>
+
+          <div class="total-time">
+            <span class="time-label">Ukupno vrijeme:</span>
+            <span class="time-value">{{ formatTime(hours, minutes) }}</span>
+          </div>
+
+          <div class="form-group">
+            <label>Napomena (opcionalno)</label>
+            <textarea 
+              [(ngModel)]="note"
+              placeholder="Npr. Naucili smo osnove Angulara..."
+              rows="3"
+            ></textarea>
+          </div>
+
+          <button class="btn btn-primary btn-full" (click)="saveStudy()">
+            Dodaj Sesiju Učenja
+          </button>
+
+          <div class="stats-summary">
+            <div class="stat-summary-item">
+              <span class="stat-summary-label">Prosječno dnevno:</span>
+              <span class="stat-summary-value">{{ averageHoursPerDay }}h</span>
+            </div>
+            <div class="stat-summary-item">
+              <span class="stat-summary-label">Ukupno sesija:</span>
+              <span class="stat-summary-value">{{ entries.length }}</span>
+            </div>
+          </div>
+        </div>
+
+       
+        @if (todayEntries.length > 0) {
+          <div class="today-section">
+            <h3>Današnje Sesije ({{ totalHoursToday }}h)</h3>
+            
+            <div class="today-entries">
+              @for (entry of todayEntries; track entry.id) {
+                <div class="today-entry-card">
+                  <div class="today-entry-header">
+                    <span class="entry-subject">{{ entry.subject }}</span>
+                    <span class="entry-time">{{ formatTime(entry.hours, entry.minutes) }}</span>
+                  </div>
+                  @if (entry.note) {
+                    <p class="entry-note-text">{{ entry.note }}</p>
+                  }
+                  <button class="btn-delete-small" (click)="deleteEntry(entry.id)">
+                    Obriši
+                  </button>
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+        
+        @if (entries.length > 0) {
+          <div class="history-section">
+            <h3>Sve Sesije</h3>
+            
+            <div class="entries-list">
+              @for (entry of entries; track entry.id) {
+                <div class="entry-card">
+                  <div class="entry-header">
+                    <span class="entry-date">{{ formatDate(entry.date) }}</span>
+                    <span class="entry-time-badge">{{ formatTime(entry.hours, entry.minutes) }}</span>
+                  </div>
+
+                  <div class="entry-content">
+                    <div class="entry-subject-display">
+                      <span class="subject-label">Predmet:</span>
+                      <span class="subject-value">{{ entry.subject }}</span>
+                    </div>
+
+                    @if (entry.note) {
+                      <div class="entry-note">
+                        <p>{{ entry.note }}</p>
+                      </div>
+                    }
+                  </div>
+
+                  <button class="btn-delete" (click)="deleteEntry(entry.id)">
+                    Obriši
+                  </button>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+}
