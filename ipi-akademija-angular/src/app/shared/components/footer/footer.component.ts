@@ -20,7 +20,7 @@ export class FooterComponent {
     event.preventDefault();
     
     if (this.newsletterEmail) {
-      this.notificationService.success('Uspješno ste se prijavili na newsletter! 📧');
+      this.notificationService.success('Uspješno ste se prijavili na newsletter!');
       this.newsletterEmail = '';
     }
   }

@@ -171,7 +171,7 @@
 
   <footer class="settings-footer">
     <div class="footer-content">
-      <p>&copy; 2025 LifeTrack | Projekt za predmet Web programiranje</p>
+      <p>&copy; 2025 | Projekat za predmet Web programiranje</p>
     </div>
   </footer>
 </div>
@@ -212,7 +212,7 @@
       </div>
       
       <div class="modal-body">
-        <p class="modal-warning">⚠️ UPOZORENJE: Ova akcija je NEPOVRATNA!</p>
+        <p class="modal-warning">UPOZORENJE: Ova akcija je NEPOVRATNA!</p>
         <p>Brisanjem naloga trajno gubite:</p>
         <ul class="danger-list">
           <li>Sve odabrane trackere</li>
@@ -221,11 +221,11 @@
           <li>Pristup svim funkcijama</li>
         </ul>
         
-        <p class="confirm-instruction">Da potvrdite, unesite riječ <strong>OBRIŠI</strong> ispod:</p>
+        <p class="confirm-instruction">Da potvrdite, unesite riječ <strong>OBRISI</strong> ispod:</p>
         <input 
           type="text" 
           [(ngModel)]="deleteConfirmText"
-          placeholder="Unesite OBRIŠI"
+          placeholder="Unesite OBRISI"
           class="danger-input"
         />
       </div>
@@ -237,7 +237,7 @@
         <button 
           class="btn btn-danger" 
           (click)="confirmDeleteAccount()"
-          [disabled]="deleteConfirmText !== 'OBRIŠI'"
+          [disabled]="deleteConfirmText !== 'OBRISI'"
         >
           Trajno Obriši Nalog
         </button>
