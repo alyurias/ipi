@@ -71,13 +71,17 @@
                 <div 
                   class="module-option" 
                   [class.selected]="isModuleSelected(module.id)"
-                  [class.disabled]="!isModuleSelected(module.id) && selectedModules.length >= 3"
+                  [class.disabled]="!isModuleSelected(module.id) && selectedModules.length >= 3 && !module.comingSoon"
+                  [class.coming-soon]="module.comingSoon"
                   (click)="toggleModule(module.id)"
                 >
                   <h3>{{ module.name }}</h3>
                   <p>{{ module.description }}</p>
                   @if (isModuleSelected(module.id)) {
                     <div class="selected-badge">✓</div>
+                  }
+                  @if (module.comingSoon) {
+                    <div class="coming-soon-badge">Uskoro</div>
                   }
                 </div>
               }
@@ -189,7 +193,7 @@
   
   <footer class="dashboard-footer">
     <div class="footer-content">
-      <p>&copy; 2025 | Projekat za predmet Web programiranje</p>
+      <p>&copy; 2025 LifeTrack | Projekt za predmet Web programiranje</p>
     </div>
   </footer>
 </div>

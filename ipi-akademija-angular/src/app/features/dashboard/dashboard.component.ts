@@ -25,6 +25,7 @@ interface Module {
   name: string;
   icon: string;
   description: string;
+  comingSoon?: boolean;
 }
 
 @Component({
@@ -66,11 +67,11 @@ export class DashboardComponent implements OnInit {
   availableModules: Module[] = [
     { id: 'sleep', name: 'Sleep Tracker', icon: '', description: 'Pratite san' },
     { id: 'study', name: 'Study Planner', icon: '', description: 'Organizujte učenje' },
-    { id: 'fitness', name: 'Fitness Planner', icon: '', description: 'Vježbanje' },
-    { id: 'tasks', name: 'Task Planner', icon: '', description: 'Upravljajte planovima' },
+    { id: 'fitness', name: 'Fitness Planner', icon: '', description: 'Vježbanje', comingSoon: true },
+    { id: 'tasks', name: 'Task Planner', icon: '', description: 'Upravljajte planovima', comingSoon: true },
     { id: 'meal', name: 'Meal Planner', icon: '', description: 'Planirajte obroke' },
     { id: 'mood', name: 'Mood Tracker', icon: '', description: 'Pratite raspoloženje' },
-    { id: 'finance', name: 'Finance Tracker', icon: '', description: 'Budžet' },
+    { id: 'finance', name: 'Finance Tracker', icon: '', description: 'Budžet', comingSoon: true },
     { id: 'gratitude', name: 'Gratitude Journal', icon: '', description: 'Dnevnik zahvalnosti' },
     { id: 'reflection', name: 'Daily Reflection', icon: '', description: 'Dnevni osvrt' },
     { id: 'water', name: 'Water Intake', icon: '', description: 'Praćenje hidratacije' }
@@ -126,6 +127,14 @@ export class DashboardComponent implements OnInit {
   }
 
   toggleModule(id: string): void {
+    const module = this.availableModules.find(m => m.id === id);
+    
+    // Prevent selection of coming soon modules
+    if (module?.comingSoon) {
+      this.notificationService.success('Ovaj tracker će biti dostupan uskoro!');
+      return;
+    }
+    
     const index = this.selectedModules.indexOf(id);
     
     if (index > -1) {
