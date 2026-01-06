@@ -1,1 +1,172 @@
-<p>mood-tracker works!</p>
+<div class="tracker-module" (click)="openModal()">
+  
+  <div class="module-header">
+    <h3>Praćenje Raspoloženja</h3>
+    <span class="status-badge" [class.completed]="todayEntry">
+      {{ todayEntry ? 'Završeno' : 'Nije završeno' }}
+    </span>
+  </div>
+
+  <div class="module-stats">
+    <div class="stat-item">
+      <span class="stat-label">Danas</span>
+      <span class="stat-value">{{ todayEntry ? getMoodLabel(todayEntry.mood) : 'N/A' }}</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Prosječno</span>
+      <span class="stat-value">{{ averageMood }}/5</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Streak</span>
+      <span class="stat-value">{{ currentStreak }}</span>
+    </div>
+  </div>
+
+  @if (todayEntry) {
+    <div class="today-preview" [style.background-color]="getMoodColor(todayEntry.mood)">
+      <p class="preview-label">Trenutno raspoloženje:</p>
+      <p class="preview-value">{{ getMoodLabel(todayEntry.mood) }}</p>
+    </div>
+  } @else {
+    <div class="call-to-action">
+      <p>Klikni za dodavanje</p>
+    </div>
+  }
+</div>
+
+
+@if (showModal) {
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Praćenje Raspoloženja</h2>
+        <button class="close-btn" (click)="closeModal()">×</button>
+      </div>
+
+      <div class="modal-body">
+     
+        <div class="mood-form">
+          <div class="form-group">
+            <label>Kako se osjećaš danas?</label>
+            <div class="mood-selector">
+              @for (mood of [1, 2, 3, 4, 5]; track mood) {
+                <button
+                  type="button"
+                  class="mood-btn"
+                  [class.selected]="selectedMood === mood"
+                  [style.border-color]="selectedMood === mood ? getMoodColor(mood) : ''"
+                  [style.background-color]="selectedMood === mood ? getMoodColor(mood) : ''"
+                  (click)="selectedMood = mood"
+                >
+                  <span class="mood-number">{{ mood }}</span>
+                  <span class="mood-label">{{ getMoodLabel(mood) }}</span>
+                </button>
+              }
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Šta utiče na tvoje raspoloženje?</label>
+            <div class="factors-grid">
+              @for (factor of availableFactors; track factor) {
+                <button
+                  type="button"
+                  class="factor-chip"
+                  [class.selected]="isFacorSelected(factor)"
+                  (click)="toggleFactor(factor)"
+                >
+                  {{ factor }}
+                </button>
+              }
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Današnje aktivnosti?</label>
+            <input 
+              type="text" 
+              [(ngModel)]="activities"
+              placeholder="Npr. 'Vježbanje, čitanje...'"
+              class="text-input"
+            />
+          </div>
+
+          <div class="form-group">
+            <label>Dodatna napomena (opcionalno)</label>
+            <textarea 
+              [(ngModel)]="note"
+              placeholder="Bilo šta drugo što želiš da zapamtiš o danas..."
+              rows="3"
+            ></textarea>
+          </div>
+
+          <button class="btn btn-primary btn-full" (click)="saveMood()">
+            {{ todayEntry ? 'Ažuriraj' : 'Sačuvaj' }} Raspoloženje
+          </button>
+
+          <div class="stats-summary">
+            <div class="stat-summary-item">
+              <span class="stat-summary-label">Najčešći faktor:</span>
+              <span class="stat-summary-value">{{ mostCommonFactor }}</span>
+            </div>
+            <div class="stat-summary-item">
+              <span class="stat-summary-label">Ukupno unosa:</span>
+              <span class="stat-summary-value">{{ totalEntries }}</span>
+            </div>
+          </div>
+        </div>
+
+        
+        @if (entries.length > 0) {
+          <div class="history-section">
+            <h3>Prethodni Unosi</h3>
+            
+            <div class="entries-list">
+              @for (entry of entries; track entry.id) {
+                <div class="entry-card">
+                  <div class="entry-header">
+                    <span class="entry-date">{{ formatDate(entry.date) }}</span>
+                    <span 
+                      class="entry-mood-badge"
+                      [style.background-color]="getMoodColor(entry.mood)"
+                    >
+                      {{ getMoodLabel(entry.mood) }}
+                    </span>
+                  </div>
+
+                  @if (entry.factors.length > 0) {
+                    <div class="entry-factors">
+                      <span class="factors-label">Faktori:</span>
+                      <div class="factors-list">
+                        @for (factor of entry.factors; track factor) {
+                          <span class="factor-tag">{{ factor }}</span>
+                        }
+                      </div>
+                    </div>
+                  }
+
+                  @if (entry.activities) {
+                    <div class="entry-activities">
+                      <span class="activities-label">Aktivnosti:</span>
+                      <p>{{ entry.activities }}</p>
+                    </div>
+                  }
+
+                  @if (entry.note) {
+                    <div class="entry-note">
+                      <p>{{ entry.note }}</p>
+                    </div>
+                  }
+
+                  <button class="btn-delete" (click)="deleteEntry(entry.id)">
+                    Obriši
+                  </button>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+}

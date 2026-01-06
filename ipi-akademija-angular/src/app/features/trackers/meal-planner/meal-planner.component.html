@@ -1,1 +1,260 @@
-<p>meal-planner works!</p>
+<div class="tracker-module" (click)="openModal()">
+
+  <div class="module-header">
+    <h3>Planer Obroka</h3>
+    <span class="status-badge" [class.completed]="todayEntries.length > 0">
+      {{ todayEntries.length > 0 ? todayEntries.length + ' obroka' : 'Nema unosa' }}
+    </span>
+  </div>
+
+  <div class="module-stats">
+    <div class="stat-item">
+      <span class="stat-label">Danas</span>
+      <span class="stat-value">{{ totalMealsToday }}</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Kalorije</span>
+      <span class="stat-value">{{ totalCaloriesToday }}</span>
+    </div>
+    <div class="stat-item">
+      <span class="stat-label">Sedmica</span>
+      <span class="stat-value">{{ totalMealsWeek }}</span>
+    </div>
+  </div>
+
+  @if (todayEntries.length > 0) {
+    <div class="today-preview">
+      <p class="preview-label">Najčešći obrok:</p>
+      <p class="preview-value">{{ mostCommonMeal }}</p>
+    </div>
+  } @else {
+    <div class="call-to-action">
+      <p>Klikni za dodavanje</p>
+    </div>
+  }
+</div>
+
+
+@if (showModal) {
+  <div class="modal-overlay" (click)="closeModal()">
+    <div class="modal-container" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>Planer Obroka</h2>
+        <button class="close-btn" (click)="closeModal()">×</button>
+      </div>
+
+      <div class="modal-body">
+        <!-- AI Button -->
+        <div class="ai-section">
+          <button class="btn btn-ai" (click)="openAIModal(); closeModal();">
+       
+            Generiši obrok sa AI
+          </button>
+        </div>
+
+        <!-- Form -->
+        <div class="meal-form">
+          <div class="form-group">
+            <label>Tip obroka</label>
+            <select [(ngModel)]="mealType" class="select-input">
+              @for (type of mealTypes; track type.value) {
+                <option [value]="type.value">{{ type.label }}</option>
+              }
+            </select>
+          </div>
+
+          <div class="form-group">
+            <label>Naziv obroka</label>
+            <input 
+              type="text" 
+              [(ngModel)]="mealName"
+  
+              class="text-input"
+            />
+          </div>
+
+          <div class="form-group">
+            <label>Sastojci (opcionalno)</label>
+            <textarea 
+              [(ngModel)]="ingredients"
+              placeholder="Npr. 'Jaja, paradajz, sir'..."
+              rows="2"
+            ></textarea>
+          </div>
+
+          <div class="form-group">
+            <label>Kalorije (opcionalno)</label>
+            <input 
+              type="number" 
+              [(ngModel)]="calories"
+              placeholder="0"
+              class="number-input"
+              min="0"
+            />
+          </div>
+
+          <div class="form-group">
+            <label>Napomena (opcionalno)</label>
+            <textarea 
+              [(ngModel)]="note"
+              placeholder="Bilo šta dodatno..."
+              rows="2"
+            ></textarea>
+          </div>
+
+          <button class="btn btn-primary btn-full" (click)="saveMeal()">
+            Dodaj Obrok
+          </button>
+
+          <div class="stats-summary">
+            <div class="stat-summary-item">
+              <span class="stat-summary-label">Prosječno kalorija:</span>
+              <span class="stat-summary-value">{{ averageCaloriesPerDay }}</span>
+            </div>
+            <div class="stat-summary-item">
+              <span class="stat-summary-label">Ukupno obroka:</span>
+              <span class="stat-summary-value">{{ entries.length }}</span>
+            </div>
+          </div>
+        </div>
+
+  
+        @if (todayEntries.length > 0) {
+          <div class="today-section">
+            <h3>Današnji Obroci ({{ totalCaloriesToday }} kcal)</h3>
+            
+            <div class="today-meals">
+              @for (meal of todayEntries; track meal.id) {
+                <div class="today-meal-card">
+                  <div class="meal-header">
+                    <span class="meal-type-badge">{{ getMealTypeLabel(meal.mealType) }}</span>
+                    <span class="meal-name">{{ meal.mealName }}</span>
+                  </div>
+                  @if (meal.calories > 0) {
+                    <p class="meal-calories">{{ meal.calories }} kcal</p>
+                  }
+                  <button class="btn-delete-small" (click)="deleteEntry(meal.id)">
+                    Obriši
+                  </button>
+                </div>
+              }
+            </div>
+          </div>
+        }
+
+
+        @if (entries.length > 0) {
+          <div class="history-section">
+            <h3>Svi Obroci</h3>
+            
+            <div class="entries-list">
+              @for (entry of entries; track entry.id) {
+                <div class="entry-card">
+                  <div class="entry-header">
+                    <div>
+                      <span class="entry-date">{{ formatDate(entry.date) }}</span>
+                      <span class="meal-type-tag">{{ getMealTypeLabel(entry.mealType) }}</span>
+                    </div>
+                    @if (entry.calories > 0) {
+                      <span class="calories-badge">{{ entry.calories }} kcal</span>
+                    }
+                  </div>
+
+                  <div class="entry-content">
+                    <h4 class="meal-title">{{ entry.mealName }}</h4>
+                    
+                    @if (entry.ingredients) {
+                      <div class="meal-ingredients">
+                        <span class="label">Sastojci:</span>
+                        <p>{{ entry.ingredients }}</p>
+                      </div>
+                    }
+
+                    @if (entry.note) {
+                      <div class="meal-note">
+                        <p>{{ entry.note }}</p>
+                      </div>
+                    }
+                  </div>
+
+                  <button class="btn-delete" (click)="deleteEntry(entry.id)">
+                    Obriši
+                  </button>
+                </div>
+              }
+            </div>
+          </div>
+        }
+      </div>
+    </div>
+  </div>
+}
+
+
+@if (showAIModal) {
+  <div class="modal-overlay" (click)="closeAIModal()">
+    <div class="modal-container ai-modal" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+
+        <button class="close-btn" (click)="closeAIModal()">×</button>
+      </div>
+
+      <div class="modal-body">
+        <div class="ai-generator">
+          <p class="ai-instruction">
+            Generisi tri prijedloga!
+          </p>
+
+          <div class="form-group">
+            <label>Šta želiš jesti?</label>
+            <textarea 
+              [(ngModel)]="aiPrompt"
+              placeholder="'Zdravi doručak sa proteinima', 'Veganski ručak', 'Brzi obrok sa piletinom'..."
+              rows="3"
+              [disabled]="aiLoading"
+            ></textarea>
+          </div>
+
+          <button 
+            class="btn btn-ai btn-full" 
+            (click)="generateAIRecipes()"
+            [disabled]="aiLoading"
+          >
+            @if (aiLoading) {
+              <span class="loading-spinner"></span>
+              <span>Generišem recepte...</span>
+            } @else {
+              <span>Generiši Recepte</span>
+            }
+          </button>
+
+          @if (aiError) {
+            <div class="ai-error">
+              <p>{{ aiError }}</p>
+            </div>
+          }
+
+          @if (aiRecipes.length > 0) {
+            <div class="ai-recipes">
+              <h3>AI Prijedlozi:</h3>
+              
+              @for (recipe of aiRecipes; track $index) {
+                <div class="ai-recipe-card">
+                  <h4>{{ recipe.name }}</h4>
+                  <p class="recipe-ingredients"><strong>Sastojci:</strong> {{ recipe.ingredients }}</p>
+                  <p class="recipe-calories"><strong>Kalorije:</strong> ~{{ recipe.calories }} kcal</p>
+                  <button class="btn btn-secondary" (click)="useAIRecipe(recipe)">
+                    Koristi ovaj recept
+                  </button>
+                </div>
+              }
+            </div>
+          }
+
+
+   
+        </div>
+      </div>
+    </div>
+  </div>
+}
