@@ -7,7 +7,7 @@ import { NotificationService } from '../../core/services/notification.service';
 import { StatisticsService } from '../../core/services/statistics.service';
 import { Subject, takeUntil } from 'rxjs';
 
-// Import all tracker components
+
 import { SleepTrackerComponent } from '../../features/trackers/sleep-tracker/sleep-tracker.component';
 import { StudyPlannerComponent } from '../../features/trackers/study-planner/study-planner.component';
 import { FitnessPlannerComponent } from '../../features/trackers/fitness-planner/fitness-planner.component';
@@ -93,9 +93,24 @@ export class DashboardComponent implements OnInit, OnDestroy {
       description: 'Pratite svoje dnevno raspoloženje'
     },
     {
-      id: 'tasks',
-      name: 'Task Planner',
-      description: 'Organizujte svoje zadatke'
+      id: 'meal',
+      name: 'Meal Planner',
+      description: 'Planirajte svoje obroke'
+    },
+    {
+      id: 'gratitude',
+      name: 'Gratitude Journal',
+      description: 'Dnevnik zahvalnosti'
+    },
+    {
+      id: 'reflection',
+      name: 'Daily Reflection',
+      description: 'Dnevna refleksija'
+    },
+    {
+      id: 'water',
+      name: 'Water Intake',
+      description: 'Pratite unos vode'
     },
     {
       id: 'fitness',
@@ -104,33 +119,15 @@ export class DashboardComponent implements OnInit, OnDestroy {
       comingSoon: true
     },
     {
-      id: 'meal',
-      name: 'Meal Planner',
-      description: 'Planirajte svoje obroke',
+      id: 'tasks',
+      name: 'Task Planner',
+      description: 'Organizujte svoje zadatke',
       comingSoon: true
     },
     {
       id: 'finance',
       name: 'Finance Tracker',
       description: 'Pratite svoje finansije',
-      comingSoon: true
-    },
-    {
-      id: 'gratitude',
-      name: 'Gratitude Journal',
-      description: 'Dnevnik zahvalnosti',
-      comingSoon: true
-    },
-    {
-      id: 'reflection',
-      name: 'Daily Reflection',
-      description: 'Dnevna refleksija',
-      comingSoon: true
-    },
-    {
-      id: 'water',
-      name: 'Water Intake',
-      description: 'Pratite unos vode',
       comingSoon: true
     }
   ];
@@ -158,16 +155,16 @@ export class DashboardComponent implements OnInit, OnDestroy {
     const userId = this.currentUser()?.uid;
     if (!userId) return;
 
-    // 1. Completed Tasks (from localStorage)
+  
     const completedTasks = this.getCompletedTasksCount(userId);
 
-    // 2. Daily Streak (consecutive days with data)
+
     const streak = this.calculateStreak(data);
 
-    // 3. Study Time Today
+ 
     const studyTimeToday = this.getStudyTimeToday(data);
 
-    // 4. Average Mood (last 7 days)
+   
     const averageMood = this.getAverageMood(data);
 
     this.quickStats = [
@@ -180,15 +177,14 @@ export class DashboardComponent implements OnInit, OnDestroy {
 
   getCompletedTasksCount(userId: string): number {
     try {
-      // Check if tasks are stored in localStorage
+ 
       const tasksKey = `tasks_${userId}`;
       const stored = localStorage.getItem(tasksKey);
       
       if (!stored) return 0;
 
       const tasks = JSON.parse(stored);
-      
-      // Count completed tasks
+   
       if (Array.isArray(tasks)) {
         return tasks.filter((task: any) => task.completed === true).length;
       }
@@ -201,7 +197,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   calculateStreak(data: any): number {
-    // Calculate consecutive days with any activity (sleep, study, or mood entries)
+
     const today = new Date();
     let streak = 0;
     
@@ -218,7 +214,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       if (hasActivity) {
         streak++;
       } else if (i > 0) {
-        // Stop counting if we hit a day with no activity (but not today)
+
         break;
       }
     }
@@ -245,7 +241,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
       return '0/5';
     }
 
-    // Get mood entries from last 7 days
+
     const sevenDaysAgo = new Date();
     sevenDaysAgo.setDate(sevenDaysAgo.getDate() - 7);
     const cutoffStr = sevenDaysAgo.toISOString().split('T')[0];
@@ -357,7 +353,7 @@ export class DashboardComponent implements OnInit, OnDestroy {
   }
 
   onDrop(event: CdkDragDrop<string[]>): void {
-    // Handle reordering of modules if needed
+
     const temp = this.selectedModules[event.previousIndex];
     this.selectedModules[event.previousIndex] = this.selectedModules[event.currentIndex];
     this.selectedModules[event.currentIndex] = temp;

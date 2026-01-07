@@ -145,9 +145,9 @@ export class SettingsComponent implements OnInit {
       
    
       if (themeId === 'newyear') {
-        this.notificationService.success('Novogodišnja tema aktivirana! ❄️ Neka pada snijeg!');
+        this.notificationService.success('Novogodišnja tema aktivirana!');
       } else if (themeId === 'spring') {
-        this.notificationService.success('Proljetna tema aktivirana! 🌸 Neka cvjetaju latice!');
+        this.notificationService.success('Proljetna tema aktivirana!');
       } else {
         this.notificationService.success('Tema je uspješno promijenjena!');
       }
@@ -236,7 +236,7 @@ export class SettingsComponent implements OnInit {
   }
 
   async confirmDeleteAccount(): Promise<void> {
-    if (this.deleteConfirmText !== 'OBRIŠI') {
+    if (this.deleteConfirmText !== 'OBRISI') {
       this.notificationService.error('Morate unijeti "OBRIŠI" da potvrdite!');
       return;
     }
