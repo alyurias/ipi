@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { ThemeService } from '../../core/services/theme.service';
 import { AuthService } from '../../core/services/auth.service';
+import { NotificationService } from '../../core/services/notification.service';
 
 @Component({
   selector: 'app-fun-zone',
@@ -14,6 +15,7 @@ import { AuthService } from '../../core/services/auth.service';
 export class FunZoneComponent implements OnInit {
   private themeService = inject(ThemeService);
   private authService = inject(AuthService);
+  private notificationService = inject(NotificationService);
   private router = inject(Router);
 
   sidebarOpen = true;
@@ -21,6 +23,7 @@ export class FunZoneComponent implements OnInit {
   currentUser = this.authService.currentUser;
 
   ngOnInit(): void {
+    // KRITIČNO: Primijeni temu odmah pri učitavanju komponente
     this.themeService.applyUserTheme();
     this.loadSidebarState();
   }
@@ -43,6 +46,7 @@ export class FunZoneComponent implements OnInit {
 
   showSidebar(): void {
     this.sidebarVisible = true;
+    this.sidebarOpen = true;
     localStorage.setItem('sidebarHidden', 'false');
   }
 
@@ -54,7 +58,7 @@ export class FunZoneComponent implements OnInit {
     if (confirm('Želite li se odjaviti?')) {
       const result = await this.authService.logout();
       if (result.success) {
-        this.router.navigate(['/login']);
+        this.notificationService.success(result.message);
       }
     }
   }

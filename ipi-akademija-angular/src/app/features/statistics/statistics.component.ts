@@ -6,6 +6,7 @@ import { Chart, ChartConfiguration, registerables } from 'chart.js';
 import { StatisticsService, StatisticsData } from '../../core/services/statistics.service';
 import { AuthService } from '../../core/services/auth.service';
 import { NotificationService } from '../../core/services/notification.service';
+import { ThemeService } from '../../core/services/theme.service';
 import { Subject, takeUntil } from 'rxjs';
 
 Chart.register(...registerables);
@@ -21,6 +22,7 @@ export class StatisticsComponent implements OnInit, OnDestroy, AfterViewInit {
   private statisticsService = inject(StatisticsService);
   private authService = inject(AuthService);
   private notificationService = inject(NotificationService);
+  private themeService = inject(ThemeService);
   private router = inject(Router);
   private destroy$ = new Subject<void>();
 
@@ -45,11 +47,10 @@ export class StatisticsComponent implements OnInit, OnDestroy, AfterViewInit {
   averageMood = 0;
 
   ngOnInit(): void {
+    // KRITIČNO: Primijeni temu odmah pri učitavanju komponente
+    this.themeService.applyUserTheme();
     this.loadStatistics();
-    const sidebarHidden = localStorage.getItem('sidebarHidden');
-    if (sidebarHidden === 'true') {
-      this.sidebarVisible = false;
-    }
+    this.loadSidebarState();
   }
 
   ngAfterViewInit(): void {
@@ -64,6 +65,13 @@ export class StatisticsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.destroyCharts();
   }
 
+  loadSidebarState(): void {
+    const sidebarHidden = localStorage.getItem('sidebarHidden');
+    if (sidebarHidden === 'true') {
+      this.sidebarVisible = false;
+    }
+  }
+
   toggleSidebar(): void {
     this.sidebarOpen = !this.sidebarOpen;
   }
@@ -75,6 +83,7 @@ export class StatisticsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   showSidebar(): void {
     this.sidebarVisible = true;
+    this.sidebarOpen = true;
     localStorage.setItem('sidebarHidden', 'false');
   }
 
@@ -131,7 +140,6 @@ export class StatisticsComponent implements OnInit, OnDestroy, AfterViewInit {
   calculateAverages(): void {
     if (!this.statisticsData) return;
 
- 
     if (this.statisticsData.sleep.length > 0) {
       const totalSleep = this.statisticsData.sleep.reduce((sum, s) => sum + s.hours, 0);
       this.averageSleep = parseFloat((totalSleep / this.statisticsData.sleep.length).toFixed(1));
@@ -139,14 +147,12 @@ export class StatisticsComponent implements OnInit, OnDestroy, AfterViewInit {
       this.averageSleep = 0;
     }
 
- 
     if (this.statisticsData.study.length > 0) {
       const totalStudy = this.statisticsData.study.reduce((sum, s) => sum + s.hours, 0);
       this.averageStudy = parseFloat((totalStudy / this.statisticsData.study.length).toFixed(1));
     } else {
       this.averageStudy = 0;
     }
-
 
     if (this.statisticsData.mood.length > 0) {
       const totalMood = this.statisticsData.mood.reduce((sum, m) => sum + m.rating, 0);
@@ -184,7 +190,7 @@ export class StatisticsComponent implements OnInit, OnDestroy, AfterViewInit {
           label: 'Sati spavanja',
           data,
           backgroundColor: 'rgba(99, 161, 241, 0.8)',
-          borderColor: 'hsla(199, 100%, 77%, 1.00)',
+          borderColor: 'hsla(0, 0%, 0%, 1.00)',
           borderWidth: 2,
           borderRadius: 8
         }]
@@ -232,8 +238,8 @@ export class StatisticsComponent implements OnInit, OnDestroy, AfterViewInit {
         datasets: [{
           label: 'Vrijeme učenja (sati)',
           data,
-          borderColor: 'rgba(16, 185, 129, 1)',
-          backgroundColor: 'rgba(16, 185, 129, 0.1)',
+          borderColor: 'rgba(0, 0, 0, 1)',
+          backgroundColor: 'rgba(177, 255, 146, 0.1)',
           borderWidth: 3,
           fill: true,
           tension: 0.4,
@@ -273,15 +279,13 @@ export class StatisticsComponent implements OnInit, OnDestroy, AfterViewInit {
     const ctx = this.overviewChartRef.nativeElement.getContext('2d');
     if (!ctx) return;
 
-  
     const totalSleep = this.statisticsData.sleep.reduce((sum, s) => sum + s.hours, 0);
     const totalStudy = this.statisticsData.study.reduce((sum, s) => sum + s.hours, 0);
     
- 
     const days = this.statisticsData.sleep.length || 1;
     const avgSleep = totalSleep / days;
     const avgStudy = totalStudy / days;
-    const avgOther = Math.max(0, 24 - avgSleep - avgStudy); 
+    const avgOther = Math.max(0, 24 - avgSleep - avgStudy);
 
     const config: ChartConfiguration = {
       type: 'pie',
@@ -295,9 +299,9 @@ export class StatisticsComponent implements OnInit, OnDestroy, AfterViewInit {
             'rgba(255, 202, 248, 0.8)'     
           ],
           borderColor: [
-            'rgba(160, 201, 255, 0.8)',    
-            'rgba(220, 255, 243, 0.8)',     
-            'rgba(255, 202, 248, 0.8)'      
+            'rgba(0, 0, 0, 0.8)',    
+            'rgba(0, 0, 0, 0.8)',     
+            'rgba(0, 0, 0, 0.8)'      
           ],
           borderWidth: 2
         }]
