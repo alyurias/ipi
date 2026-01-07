@@ -121,15 +121,6 @@
           <p>Prosječno raspoloženje</p>
         </div>
       </div>
-
-      <div class="summary-card">
-        <div class="summary-content">
-          <h3>{{ completionRate }}%</h3>
-          <p>Stopa završenosti zadataka</p>
-        </div>
-      </div>
-    </div>
-
    
     <div class="charts-section">
  
@@ -154,28 +145,29 @@
         </div>
       </div>
 
-   
       <div class="chart-card">
-        <div class="chart-header">
-          <h2>Raspoloženje</h2>
-          <p>Distribucija raspoloženja kroz period</p>
-        </div>
-        <div class="chart-container">
-          <canvas #moodChart></canvas>
-        </div>
-      </div>
-
-
-      <div class="chart-card">
-        <div class="chart-header">
-          <h2>Napredak zadataka</h2>
-          <p>Sedmični/mjesečni pregled završenih zadataka</p>
-        </div>
-        <div class="chart-container">
-          <canvas #progressChart></canvas>
-        </div>
-      </div>
+    <div class="chart-header">
+      <h2>Vrijeme učenja</h2>
+      <p>Trend sati provedenih u učenju</p>
     </div>
+    <div class="chart-container">
+      <canvas #studyChart></canvas>
+    </div>
+  </div>
+
+  <!-- NEW: Overview Pie Chart -->
+  <div class="chart-card">
+    <div class="chart-header">
+      <h2>Dnevni pregled aktivnosti</h2>
+      <p>Kako provodite svoj dan</p>
+    </div>
+    <div class="chart-container">
+      <canvas #overviewChart></canvas>
+    </div>
+  </div>
+</div>
+
+  
 
  
     <div class="actions-section">

@@ -26,17 +26,14 @@ export class StatisticsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @ViewChild('sleepChart') sleepChartRef!: ElementRef<HTMLCanvasElement>;
   @ViewChild('studyChart') studyChartRef!: ElementRef<HTMLCanvasElement>;
-  @ViewChild('moodChart') moodChartRef!: ElementRef<HTMLCanvasElement>;
-  @ViewChild('progressChart') progressChartRef!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('overviewChart') overviewChartRef!: ElementRef<HTMLCanvasElement>; // PROMJENA: Novi chart
 
   private sleepChart?: Chart;
   private studyChart?: Chart;
-  private moodChart?: Chart;
-  private progressChart?: Chart;
+  private overviewChart?: Chart; // PROMJENA: Novi chart
 
   statisticsData?: StatisticsData;
   
-
   sidebarOpen = true;
   sidebarVisible = true;
   
@@ -46,9 +43,6 @@ export class StatisticsComponent implements OnInit, OnDestroy, AfterViewInit {
   averageSleep = 0;
   averageStudy = 0;
   averageMood = 0;
-  totalTasksCompleted = 0;
-  totalTasks = 0;
-  completionRate = 0;
 
   ngOnInit(): void {
     this.loadStatistics();
@@ -157,16 +151,6 @@ export class StatisticsComponent implements OnInit, OnDestroy, AfterViewInit {
     } else {
       this.averageMood = 0;
     }
-
-    if (this.statisticsData.tasks.length > 0) {
-      this.totalTasksCompleted = this.statisticsData.tasks.reduce((sum, t) => sum + t.completed, 0);
-      this.totalTasks = this.statisticsData.tasks.reduce((sum, t) => sum + t.total, 0);
-      this.completionRate = this.totalTasks > 0 
-        ? parseFloat(((this.totalTasksCompleted / this.totalTasks) * 100).toFixed(1))
-        : 0;
-    } else {
-      this.completionRate = 0;
-    }
   }
 
   createCharts(): void {
@@ -177,8 +161,7 @@ export class StatisticsComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.createSleepChart();
     this.createStudyChart();
-    this.createMoodChart();
-    this.createProgressChart();
+    this.createOverviewChart(); // PROMJENA: Novi chart
   }
 
   createSleepChart(): void {
@@ -281,40 +264,38 @@ export class StatisticsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.studyChart = new Chart(ctx, config);
   }
 
-  createMoodChart(): void {
-    if (!this.moodChartRef?.nativeElement || !this.statisticsData) return;
+  // PROMJENA: NOVI OVERVIEW PIE CHART
+  createOverviewChart(): void {
+    if (!this.overviewChartRef?.nativeElement || !this.statisticsData) return;
 
-    const ctx = this.moodChartRef.nativeElement.getContext('2d');
+    const ctx = this.overviewChartRef.nativeElement.getContext('2d');
     if (!ctx) return;
 
-    const moodCounts = [0, 0, 0, 0, 0];
+    // Izračunaj ukupno vrijeme po aktivnosti
+    const totalSleep = this.statisticsData.sleep.reduce((sum, s) => sum + s.hours, 0);
+    const totalStudy = this.statisticsData.study.reduce((sum, s) => sum + s.hours, 0);
     
-    this.statisticsData.mood.forEach(m => {
-      const rating = Math.round(m.rating);
-      if (rating >= 1 && rating <= 5) {
-        moodCounts[rating - 1]++;
-      }
-    });
+    // Prosječno dnevno vrijeme (pretpostavljam 24h - spavanje - učenje = ostalo)
+    const days = this.statisticsData.sleep.length || 1;
+    const avgSleep = totalSleep / days;
+    const avgStudy = totalStudy / days;
+    const avgOther = 24 - avgSleep - avgStudy; // Ostale aktivnosti
 
     const config: ChartConfiguration = {
       type: 'pie',
       data: {
-        labels: ['Vrlo loše (1)', 'Loše (2)', 'Neutralno (3)', 'Dobro (4)', 'Odlično (5)'],
+        labels: ['Spavanje', 'Učenje', 'Ostale aktivnosti'],
         datasets: [{
-          data: moodCounts,
+          data: [avgSleep, avgStudy, avgOther > 0 ? avgOther : 0],
           backgroundColor: [
-            'rgba(255, 83, 83, 0.8)',
-            'rgba(251, 146, 60, 0.8)',
-            'rgba(255, 213, 107, 0.8)',
-            'rgba(85, 255, 147, 0.8)',
-            'rgba(148, 189, 255, 0.8)'
+            'rgba(99, 102, 241, 0.8)',    // Purple - Spavanje
+            'rgba(16, 185, 129, 0.8)',     // Green - Učenje
+            'rgba(251, 146, 60, 0.8)'      // Orange - Ostalo
           ],
           borderColor: [
-            'rgba(255, 83, 83, 0.8)',
-            'rgba(251, 146, 60, 0.8)',
-            'rgba(255, 213, 107, 0.8)',
-            'rgba(85, 255, 147, 0.8)',
-            'rgba(148, 189, 255, 0.8)'
+            'rgba(99, 102, 241, 1)',
+            'rgba(16, 185, 129, 1)',
+            'rgba(251, 146, 60, 1)'
           ],
           borderWidth: 2
         }]
@@ -329,101 +310,22 @@ export class StatisticsComponent implements OnInit, OnDestroy, AfterViewInit {
           },
           title: {
             display: false
+          },
+          tooltip: {
+            callbacks: {
+              label: function(context) {
+                const label = context.label || '';
+                const value = context.parsed || 0;
+                const percentage = ((value / 24) * 100).toFixed(1);
+                return `${label}: ${value.toFixed(1)}h (${percentage}%)`;
+              }
+            }
           }
         }
       }
     };
 
-    this.moodChart = new Chart(ctx, config);
-  }
-
-  createProgressChart(): void {
-    if (!this.progressChartRef?.nativeElement || !this.statisticsData) return;
-
-    const ctx = this.progressChartRef.nativeElement.getContext('2d');
-    if (!ctx) return;
-
-    const weeklyData = this.groupByWeek(this.statisticsData);
-
-    const config: ChartConfiguration = {
-      type: 'bar',
-      data: {
-        labels: weeklyData.labels,
-        datasets: [
-          {
-            label: 'Završeni zadaci',
-            data: weeklyData.completed,
-            backgroundColor: 'rgba(34, 197, 94, 0.8)',
-            borderColor: 'rgba(34, 197, 94, 1)',
-            borderWidth: 2
-          },
-          {
-            label: 'Ukupno zadataka',
-            data: weeklyData.total,
-            backgroundColor: 'rgba(156, 163, 175, 0.5)',
-            borderColor: 'rgba(156, 163, 175, 1)',
-            borderWidth: 2
-          }
-        ]
-      },
-      options: {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: {
-          legend: {
-            display: true,
-            position: 'top'
-          },
-          title: {
-            display: false
-          }
-        },
-        scales: {
-          y: {
-            beginAtZero: true
-          }
-        }
-      }
-    };
-
-    this.progressChart = new Chart(ctx, config);
-  }
-
-  groupByWeek(data: StatisticsData): { labels: string[], completed: number[], total: number[] } {
-    const weeks = new Map<string, { completed: number, total: number }>();
-
-    data.tasks.forEach(task => {
-      const date = new Date(task.date);
-      const weekStart = this.getWeekStart(date);
-      const weekLabel = this.formatDate(weekStart);
-
-      if (!weeks.has(weekLabel)) {
-        weeks.set(weekLabel, { completed: 0, total: 0 });
-      }
-
-      const week = weeks.get(weekLabel)!;
-      week.completed += task.completed;
-      week.total += task.total;
-    });
-
-    const labels: string[] = [];
-    const completed: number[] = [];
-    const total: number[] = [];
-
-    weeks.forEach((value, key) => {
-      labels.push(key);
-      completed.push(value.completed);
-      total.push(value.total);
-    });
-
-    return { labels, completed, total };
-  }
-
-  getWeekStart(date: Date): string {
-    const day = date.getDay();
-    const diff = date.getDate() - day + (day === 0 ? -6 : 1);
-    const weekStart = new Date(date.setDate(diff));
-    return weekStart.toISOString().split('T')[0];
+    this.overviewChart = new Chart(ctx, config);
   }
 
   formatDate(dateStr: string): string {
@@ -447,13 +349,9 @@ export class StatisticsComponent implements OnInit, OnDestroy, AfterViewInit {
       this.studyChart.destroy();
       this.studyChart = undefined;
     }
-    if (this.moodChart) {
-      this.moodChart.destroy();
-      this.moodChart = undefined;
-    }
-    if (this.progressChart) {
-      this.progressChart.destroy();
-      this.progressChart = undefined;
+    if (this.overviewChart) {
+      this.overviewChart.destroy();
+      this.overviewChart = undefined;
     }
   }
 
