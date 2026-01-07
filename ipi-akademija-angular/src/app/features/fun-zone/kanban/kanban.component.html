@@ -1,0 +1,119 @@
+<div class="kanban-wrapper">
+  <div class="kanban-container">
+    <div class="header">
+      <button class="btn-back" (click)="goBack()">← Povratak u Fun Zone</button>
+      <h1>Kanban Ploča</h1>
+      <button class="btn-clear" (click)="clearBoard()">Očisti Ploču</button>
+    </div>
+
+    <div class="add-task-section">
+      <div class="add-task-card">
+        <h2>Dodaj Novi Zadatak</h2>
+        <div class="form-group">
+          <input
+            type="text"
+            class="form-input"
+            [(ngModel)]="newTaskTitle"
+            placeholder="Naziv zadatka"
+            (keyup.enter)="addTask()">
+          <input
+            type="text"
+            class="form-input"
+            [(ngModel)]="newTaskDescription"
+            placeholder="Opis zadatka (opcionalno)"
+            (keyup.enter)="addTask()">
+          <button class="btn-add" (click)="addTask()">Dodaj Zadatak</button>
+        </div>
+        <p class="form-hint">Pritisni Enter za dodavanje zadatka</p>
+      </div>
+    </div>
+
+    <div class="board-stats">
+      <div class="stat-card">
+        <span class="stat-label">Ukupno zadataka:</span>
+        <span class="stat-value">{{tasks.length}}</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Za uraditi:</span>
+        <span class="stat-value">{{getTaskCountByColumn('todo')}}</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">U toku:</span>
+        <span class="stat-value">{{getTaskCountByColumn('inProgress')}}</span>
+      </div>
+      <div class="stat-card">
+        <span class="stat-label">Završeno:</span>
+        <span class="stat-value">{{getTaskCountByColumn('done')}}</span>
+      </div>
+    </div>
+
+    <div class="kanban-board">
+      <div *ngFor="let column of columns" class="column">
+        <div class="column-header" [style.border-color]="column.color">
+          <h3>{{column.title}}</h3>
+          <span class="task-count">{{getTaskCountByColumn(column.id)}}</span>
+        </div>
+        
+        <div class="tasks-container">
+          <div
+            *ngFor="let task of getTasksByColumn(column.id)"
+            class="task-card"
+            [style.border-color]="column.color">
+            
+            <div class="task-header">
+              <h4>{{task.title}}</h4>
+              <button class="btn-delete" (click)="removeTask(task.id)">×</button>
+            </div>
+            
+            <p *ngIf="task.description" class="task-description">
+              {{task.description}}
+            </p>
+            
+            <div class="task-footer">
+              <span class="task-date">{{formatDate(task.createdAt)}}</span>
+              
+              <div class="task-actions">
+                <button
+                  *ngIf="column.id !== 'todo'"
+                  class="btn-move-left"
+                  (click)="moveTask(task.id, 'todo')"
+                  title="Pomjeri u Za Uraditi">
+                  ←
+                </button>
+                <button
+                  *ngIf="column.id !== 'inProgress'"
+                  class="btn-move-center"
+                  (click)="moveTask(task.id, 'inProgress')"
+                  title="Pomjeri u U Toku">
+                  ↑
+                </button>
+                <button
+                  *ngIf="column.id !== 'done'"
+                  class="btn-move-right"
+                  (click)="moveTask(task.id, 'done')"
+                  title="Pomjeri u Završeno">
+                  →
+                </button>
+              </div>
+            </div>
+          </div>
+          
+          <div *ngIf="getTasksByColumn(column.id).length === 0" class="empty-state">
+            <p>Nema zadataka u ovoj koloni</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="instructions">
+      <h3>Kako koristiti Kanban ploču:</h3>
+      <ul>
+        <li>Dodajte zadatak koristeći formu iznad</li>
+        <li>Povucite zadatke između kolona pomoću strelica</li>
+        <li>Kliknite na × za brisanje zadatka</li>
+        <li>Vaši zadaci će biti sačuvani automatski</li>
+        <li>Koristite Kanban za organizaciju bilo kojih zadataka</li>
+      </ul>
+    </div>
+  </div>
+</div>

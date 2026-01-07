@@ -157,22 +157,12 @@
           <div class="quick-stats">
             <h2>Brza statistika</h2>
             <div class="stats-grid">
-              <div class="stat-card">
-                <h3>12</h3>
-                <p>Završenih zadataka</p>
-              </div>
-              <div class="stat-card">
-                <h3>7</h3>
-                <p>Dnevni streak</p>
-              </div>
-              <div class="stat-card">
-                <h3>4.5h</h3>
-                <p>Vrijeme učenja</p>
-              </div>
-              <div class="stat-card">
-                <h3>8/10</h3>
-                <p>Raspoloženje</p>
-              </div>
+              @for (stat of quickStats; track stat.label) {
+                <div class="stat-card">
+                  <h3>{{ stat.value }}</h3>
+                  <p>{{ stat.label }}</p>
+                </div>
+              }
             </div>
           </div>
         }
