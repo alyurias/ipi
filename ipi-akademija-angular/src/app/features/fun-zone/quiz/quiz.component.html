@@ -1,0 +1,172 @@
+<div class="quiz-wrapper">
+  <div class="quiz-container">
+    <div class="header">
+      <button class="btn-back" (click)="goBack()">← Povratak u Fun Zone</button>
+      <h1>Kviz</h1>
+      <button class="btn-restart" (click)="restartQuiz()">Nova Igra</button>
+    </div>
+
+    <div class="content">
+      <!-- Početni ekran -->
+      <div *ngIf="!quizStarted" class="start-screen">
+        <div class="info-card">
+          <h2>Dobrodošli u Angular Kviz</h2>
+          <p>Testirajte svoje znanje o Angular frameworku</p>
+          
+          <div class="quiz-details">
+            <div class="detail-item">
+              <span class="detail-label">Broj pitanja:</span>
+              <span class="detail-value">{{questions.length}}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Vrijeme:</span>
+              <span class="detail-value">5 minuta</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Kategorije:</span>
+              <span class="detail-value">Angular osnove</span>
+            </div>
+          </div>
+
+          <div class="instructions">
+            <h3>Uputstva:</h3>
+            <ul>
+              <li>Odaberite tačan odgovor za svako pitanje</li>
+              <li>Svako pitanje ima 4 moguća odgovora</li>
+              <li>Nakon odabira prikazuje se objašnjenje</li>
+              <li>Imate 5 minuta za završetak kviza</li>
+              <li>Možete preskočiti pitanje ako ne znate odgovor</li>
+            </ul>
+          </div>
+
+          <button class="btn-start-quiz" (click)="startQuiz()">
+            Započni Kviz
+          </button>
+        </div>
+      </div>
+
+     
+      <div *ngIf="quizStarted && !quizCompleted" class="quiz-in-progress">
+        <div class="quiz-header">
+          <div class="quiz-info">
+            <div class="info-item">
+              <span class="info-label">Pitanje:</span>
+              <span class="info-value">{{currentQuestionIndex + 1}}/{{questions.length}}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Bodovi:</span>
+              <span class="info-value">{{score}}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Vrijeme:</span>
+              <span class="info-value timer" [class.warning]="timeRemaining < 60">{{formattedTime}}</span>
+            </div>
+          </div>
+
+          <div class="progress-container">
+            <div class="progress-bar">
+              <div class="progress-fill" [style.width.%]="progressPercentage"></div>
+            </div>
+            <div class="progress-text">Progres: {{progressPercentage.toFixed(0)}}%</div>
+          </div>
+        </div>
+
+        <div class="question-card">
+          <div class="question-header">
+            <span class="question-category">{{currentQuestion.category}}</span>
+            <span class="question-number">Pitanje #{{currentQuestion.id}}</span>
+          </div>
+          
+          <h2 class="question-text">{{currentQuestion.question}}</h2>
+          
+          <div class="options-container">
+            <button
+              *ngFor="let option of currentQuestion.options; let i = index"
+  class="option-btn"
+  [class.selected]="selectedAnswer === i"
+  [class.correct]="getAnswerClass(i) === 'correct'"
+  [class.wrong]="getAnswerClass(i) === 'wrong'"
+  [disabled]="showExplanation"
+  (click)="selectAnswer(i)">
+  <span class="option-letter">{{getOptionLetter(i)}}</span>
+  <span class="option-text">{{option}}</span>
+            </button>
+          </div>
+
+          <div *ngIf="showExplanation" class="explanation-container">
+            <h3>Objašnjenje</h3>
+            <p class="explanation-text">{{currentQuestion.explanation}}</p>
+            <div class="explanation-status" 
+                  [class.correct-status]="selectedAnswer === currentQuestion.correctAnswer"
+                  [class.wrong-status]="selectedAnswer !== currentQuestion.correctAnswer">
+              {{selectedAnswer === currentQuestion.correctAnswer ? 'Tačno!' : 'Netačno!'}}
+            </div>
+          </div>
+
+          <div class="navigation-buttons">
+            <button class="btn-nav btn-prev" (click)="previousQuestion()" [disabled]="currentQuestionIndex === 0">
+              ← Prethodno
+            </button>
+            
+            <button class="btn-nav btn-skip" (click)="skipQuestion()" *ngIf="!showExplanation">
+              Preskoči
+            </button>
+            
+            <button class="btn-nav btn-next" 
+                    (click)="nextQuestion()" 
+                    [disabled]="!showExplanation && selectedAnswer === null">
+              {{currentQuestionIndex < questions.length - 1 ? 'Sljedeće →' : 'Završi kviz'}}
+            </button>
+          </div>
+        </div>
+      </div>
+
+      
+      <div *ngIf="quizCompleted" class="results-screen">
+        <div class="results-card">
+          <h2>Kviz Završen</h2>
+          
+          <div class="score-display">
+            <div class="score-circle">
+              <span class="score-number">{{score}}</span>
+              <span class="score-total">/ {{questions.length}}</span>
+            </div>
+            <div class="score-percentage">{{(score / questions.length * 100).toFixed(1)}}%</div>
+          </div>
+
+          <div class="score-message">
+            <h3 *ngIf="score === questions.length">Savršeno! Ti si Angular ekspert!</h3>
+            <h3 *ngIf="score >= questions.length * 0.8 && score < questions.length">Odlično! Vrlo dobro poznaješ Angular!</h3>
+            <h3 *ngIf="score >= questions.length * 0.6 && score < questions.length * 0.8">Dobar rezultat! Dobro poznaješ osnove!</h3>
+            <h3 *ngIf="score >= questions.length * 0.4 && score < questions.length * 0.6">Solidno! Možeš još uvijek napredovati!</h3>
+            <h3 *ngIf="score < questions.length * 0.4">Nastavi učiti Angular, vjerujem u tebe!</h3>
+          </div>
+
+          <div class="results-details">
+            <div class="detail-item">
+              <span class="detail-label">Tačnih odgovora:</span>
+              <span class="detail-value">{{score}}/{{questions.length}}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Procenat tačnosti:</span>
+              <span class="detail-value">{{(score / questions.length * 100).toFixed(1)}}%</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Preostalo vrijeme:</span>
+              <span class="detail-value">{{formattedTime}}</span>
+            </div>
+          </div>
+
+          <div class="results-actions">
+            <button class="btn-restart-quiz" (click)="restartQuiz()">
+              Pokušaj ponovno
+            </button>
+            <button class="btn-finish" (click)="goBack()">
+              Završi
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

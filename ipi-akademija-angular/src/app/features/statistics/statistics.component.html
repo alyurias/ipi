@@ -49,14 +49,13 @@
     </button>
   }
 
-
   <div class="statistics-container" [class.sidebar-hidden]="!sidebarVisible">
     <div class="stats-header">
       <h1>Statistika</h1>
       <p>Pregled vašeg napretka i aktivnosti</p>
     </div>
 
-
+    <!-- Filter Section -->
     <div class="filter-section">
       <div class="filter-card">
         <div class="filter-options">
@@ -99,7 +98,7 @@
       </div>
     </div>
 
-
+    <!-- Summary Section -->
     <div class="summary-section">
       <div class="summary-card">
         <div class="summary-content">
@@ -121,9 +120,11 @@
           <p>Prosječno raspoloženje</p>
         </div>
       </div>
-   
+    </div>
+
+    <!-- Charts Section -->
     <div class="charts-section">
- 
+      <!-- Sleep Chart -->
       <div class="chart-card">
         <div class="chart-header">
           <h2>Sati spavanja</h2>
@@ -134,7 +135,7 @@
         </div>
       </div>
 
-     
+      <!-- Study Chart -->
       <div class="chart-card">
         <div class="chart-header">
           <h2>Vrijeme učenja</h2>
@@ -145,31 +146,19 @@
         </div>
       </div>
 
+      <!-- Overview Pie Chart -->
       <div class="chart-card">
-    <div class="chart-header">
-      <h2>Vrijeme učenja</h2>
-      <p>Trend sati provedenih u učenju</p>
+        <div class="chart-header">
+          <h2>Dnevni pregled aktivnosti</h2>
+          <p>Kako provodite svoj dan</p>
+        </div>
+        <div class="chart-container">
+          <canvas #overviewChart></canvas>
+        </div>
+      </div>
     </div>
-    <div class="chart-container">
-      <canvas #studyChart></canvas>
-    </div>
-  </div>
 
-  <!-- NEW: Overview Pie Chart -->
-  <div class="chart-card">
-    <div class="chart-header">
-      <h2>Dnevni pregled aktivnosti</h2>
-      <p>Kako provodite svoj dan</p>
-    </div>
-    <div class="chart-container">
-      <canvas #overviewChart></canvas>
-    </div>
-  </div>
-</div>
-
-  
-
- 
+    <!-- Actions Section -->
     <div class="actions-section">
       <button class="btn-reset" (click)="resetData()">
         Resetuj na demo podatke

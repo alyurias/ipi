@@ -26,11 +26,11 @@ export class StatisticsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @ViewChild('sleepChart') sleepChartRef!: ElementRef<HTMLCanvasElement>;
   @ViewChild('studyChart') studyChartRef!: ElementRef<HTMLCanvasElement>;
-  @ViewChild('overviewChart') overviewChartRef!: ElementRef<HTMLCanvasElement>; // PROMJENA: Novi chart
+  @ViewChild('overviewChart') overviewChartRef!: ElementRef<HTMLCanvasElement>;
 
   private sleepChart?: Chart;
   private studyChart?: Chart;
-  private overviewChart?: Chart; // PROMJENA: Novi chart
+  private overviewChart?: Chart;
 
   statisticsData?: StatisticsData;
   
@@ -131,6 +131,7 @@ export class StatisticsComponent implements OnInit, OnDestroy, AfterViewInit {
   calculateAverages(): void {
     if (!this.statisticsData) return;
 
+    // Calculate average sleep
     if (this.statisticsData.sleep.length > 0) {
       const totalSleep = this.statisticsData.sleep.reduce((sum, s) => sum + s.hours, 0);
       this.averageSleep = parseFloat((totalSleep / this.statisticsData.sleep.length).toFixed(1));
@@ -138,6 +139,7 @@ export class StatisticsComponent implements OnInit, OnDestroy, AfterViewInit {
       this.averageSleep = 0;
     }
 
+    // Calculate average study
     if (this.statisticsData.study.length > 0) {
       const totalStudy = this.statisticsData.study.reduce((sum, s) => sum + s.hours, 0);
       this.averageStudy = parseFloat((totalStudy / this.statisticsData.study.length).toFixed(1));
@@ -145,6 +147,7 @@ export class StatisticsComponent implements OnInit, OnDestroy, AfterViewInit {
       this.averageStudy = 0;
     }
 
+    // Calculate average mood
     if (this.statisticsData.mood.length > 0) {
       const totalMood = this.statisticsData.mood.reduce((sum, m) => sum + m.rating, 0);
       this.averageMood = parseFloat((totalMood / this.statisticsData.mood.length).toFixed(1));
@@ -161,7 +164,7 @@ export class StatisticsComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.createSleepChart();
     this.createStudyChart();
-    this.createOverviewChart(); // PROMJENA: Novi chart
+    this.createOverviewChart();
   }
 
   createSleepChart(): void {
@@ -264,33 +267,32 @@ export class StatisticsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.studyChart = new Chart(ctx, config);
   }
 
-  // PROMJENA: NOVI OVERVIEW PIE CHART
   createOverviewChart(): void {
     if (!this.overviewChartRef?.nativeElement || !this.statisticsData) return;
 
     const ctx = this.overviewChartRef.nativeElement.getContext('2d');
     if (!ctx) return;
 
-    // Izračunaj ukupno vrijeme po aktivnosti
+    // Calculate total time per activity
     const totalSleep = this.statisticsData.sleep.reduce((sum, s) => sum + s.hours, 0);
     const totalStudy = this.statisticsData.study.reduce((sum, s) => sum + s.hours, 0);
     
-    // Prosječno dnevno vrijeme (pretpostavljam 24h - spavanje - učenje = ostalo)
+    // Average daily time (assuming 24h - sleep - study = other activities)
     const days = this.statisticsData.sleep.length || 1;
     const avgSleep = totalSleep / days;
     const avgStudy = totalStudy / days;
-    const avgOther = 24 - avgSleep - avgStudy; // Ostale aktivnosti
+    const avgOther = Math.max(0, 24 - avgSleep - avgStudy); // Other activities
 
     const config: ChartConfiguration = {
       type: 'pie',
       data: {
         labels: ['Spavanje', 'Učenje', 'Ostale aktivnosti'],
         datasets: [{
-          data: [avgSleep, avgStudy, avgOther > 0 ? avgOther : 0],
+          data: [avgSleep, avgStudy, avgOther],
           backgroundColor: [
-            'rgba(99, 102, 241, 0.8)',    // Purple - Spavanje
-            'rgba(16, 185, 129, 0.8)',     // Green - Učenje
-            'rgba(251, 146, 60, 0.8)'      // Orange - Ostalo
+            'rgba(99, 102, 241, 0.8)',    // Purple - Sleep
+            'rgba(16, 185, 129, 0.8)',     // Green - Study
+            'rgba(251, 146, 60, 0.8)'      // Orange - Other
           ],
           borderColor: [
             'rgba(99, 102, 241, 1)',

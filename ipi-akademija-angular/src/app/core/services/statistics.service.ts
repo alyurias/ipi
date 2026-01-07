@@ -20,17 +20,10 @@ export interface MoodData {
   factors: string[];
 }
 
-export interface TaskData {
-  date: string;
-  completed: number;
-  total: number;
-}
-
 export interface StatisticsData {
   sleep: SleepData[];
   study: StudyData[];
   mood: MoodData[];
-  tasks: TaskData[];
 }
 
 @Injectable({
@@ -42,8 +35,7 @@ export class StatisticsService {
   private statisticsSubject = new BehaviorSubject<StatisticsData>({
     sleep: [],
     study: [],
-    mood: [],
-    tasks: []
+    mood: []
   });
 
   statistics$ = this.statisticsSubject.asObservable();
@@ -62,13 +54,11 @@ export class StatisticsService {
     const sleepData = this.loadSleepData(userId);
     const studyData = this.loadStudyData(userId);
     const moodData = this.loadMoodData(userId);
-    const taskData = this.generateTaskData(); 
 
     this.statisticsSubject.next({
       sleep: sleepData,
       study: studyData,
-      mood: moodData,
-      tasks: taskData
+      mood: moodData
     });
   }
 
@@ -123,25 +113,6 @@ export class StatisticsService {
     }
   }
 
-  private generateTaskData(): TaskData[] {
- 
-    const tasks: TaskData[] = [];
-    const today = new Date();
-
-    for (let i = 0; i < 30; i++) {
-      const date = new Date(today);
-      date.setDate(today.getDate() - i);
-      
-      tasks.push({
-        date: date.toISOString().split('T')[0],
-        completed: Math.floor(Math.random() * 8) + 2,
-        total: Math.floor(Math.random() * 5) + 8
-      });
-    }
-
-    return tasks;
-  }
-
   getDataForPeriod(days: number): StatisticsData {
     const allData = this.statisticsSubject.value;
     const cutoffDate = new Date();
@@ -151,8 +122,7 @@ export class StatisticsService {
     return {
       sleep: allData.sleep.filter(s => s.date >= cutoffStr),
       study: allData.study.filter(s => s.date >= cutoffStr),
-      mood: allData.mood.filter(m => m.date >= cutoffStr),
-      tasks: allData.tasks.filter(t => t.date >= cutoffStr)
+      mood: allData.mood.filter(m => m.date >= cutoffStr)
     };
   }
 
@@ -165,50 +135,41 @@ export class StatisticsService {
     const demoSleep: SleepData[] = [];
     const demoStudy: StudyData[] = [];
     const demoMood: MoodData[] = [];
-    const demoTasks: TaskData[] = [];
 
-
+    // Generate demo data for the last 14 days
     for (let i = 0; i < 14; i++) {
       const date = new Date(today);
       date.setDate(today.getDate() - i);
       const dateStr = date.toISOString().split('T')[0];
 
- 
+      // Sleep data
       demoSleep.push({
         date: dateStr,
-        hours: 6 + Math.random() * 3, 
-        quality: Math.floor(Math.random() * 3) + 3 
+        hours: 6 + Math.random() * 3, // 6-9 hours
+        quality: Math.floor(Math.random() * 3) + 3 // 3-5 quality
       });
 
-
-      if (i % 2 === 0) { 
+      // Study data (every other day)
+      if (i % 2 === 0) {
         demoStudy.push({
           date: dateStr,
-          hours: 1 + Math.random() * 3, 
+          hours: 1 + Math.random() * 3, // 1-4 hours
           subject: ['Matematika', 'Fizika', 'Programiranje', 'Engleski'][Math.floor(Math.random() * 4)]
         });
       }
 
-     
+      // Mood data
       demoMood.push({
         date: dateStr,
-        rating: Math.floor(Math.random() * 5) + 1, 
+        rating: Math.floor(Math.random() * 5) + 1, // 1-5 rating
         factors: ['Posao', 'Porodica', 'Zdravlje']
-      });
-
-   
-      demoTasks.push({
-        date: dateStr,
-        completed: Math.floor(Math.random() * 6) + 3,
-        total: Math.floor(Math.random() * 4) + 8
       });
     }
 
     this.statisticsSubject.next({
       sleep: demoSleep,
       study: demoStudy,
-      mood: demoMood,
-      tasks: demoTasks
+      mood: demoMood
     });
   }
 
