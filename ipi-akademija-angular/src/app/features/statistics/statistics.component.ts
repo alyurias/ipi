@@ -131,7 +131,7 @@ export class StatisticsComponent implements OnInit, OnDestroy, AfterViewInit {
   calculateAverages(): void {
     if (!this.statisticsData) return;
 
-    // Calculate average sleep
+ 
     if (this.statisticsData.sleep.length > 0) {
       const totalSleep = this.statisticsData.sleep.reduce((sum, s) => sum + s.hours, 0);
       this.averageSleep = parseFloat((totalSleep / this.statisticsData.sleep.length).toFixed(1));
@@ -139,7 +139,7 @@ export class StatisticsComponent implements OnInit, OnDestroy, AfterViewInit {
       this.averageSleep = 0;
     }
 
-    // Calculate average study
+ 
     if (this.statisticsData.study.length > 0) {
       const totalStudy = this.statisticsData.study.reduce((sum, s) => sum + s.hours, 0);
       this.averageStudy = parseFloat((totalStudy / this.statisticsData.study.length).toFixed(1));
@@ -147,7 +147,7 @@ export class StatisticsComponent implements OnInit, OnDestroy, AfterViewInit {
       this.averageStudy = 0;
     }
 
-    // Calculate average mood
+
     if (this.statisticsData.mood.length > 0) {
       const totalMood = this.statisticsData.mood.reduce((sum, m) => sum + m.rating, 0);
       this.averageMood = parseFloat((totalMood / this.statisticsData.mood.length).toFixed(1));
@@ -183,8 +183,8 @@ export class StatisticsComponent implements OnInit, OnDestroy, AfterViewInit {
         datasets: [{
           label: 'Sati spavanja',
           data,
-          backgroundColor: 'rgba(99, 102, 241, 0.8)',
-          borderColor: 'rgba(99, 102, 241, 1)',
+          backgroundColor: 'rgba(99, 161, 241, 0.8)',
+          borderColor: 'hsla(199, 100%, 77%, 1.00)',
           borderWidth: 2,
           borderRadius: 8
         }]
@@ -273,15 +273,15 @@ export class StatisticsComponent implements OnInit, OnDestroy, AfterViewInit {
     const ctx = this.overviewChartRef.nativeElement.getContext('2d');
     if (!ctx) return;
 
-    // Calculate total time per activity
+  
     const totalSleep = this.statisticsData.sleep.reduce((sum, s) => sum + s.hours, 0);
     const totalStudy = this.statisticsData.study.reduce((sum, s) => sum + s.hours, 0);
     
-    // Average daily time (assuming 24h - sleep - study = other activities)
+ 
     const days = this.statisticsData.sleep.length || 1;
     const avgSleep = totalSleep / days;
     const avgStudy = totalStudy / days;
-    const avgOther = Math.max(0, 24 - avgSleep - avgStudy); // Other activities
+    const avgOther = Math.max(0, 24 - avgSleep - avgStudy); 
 
     const config: ChartConfiguration = {
       type: 'pie',
@@ -290,14 +290,14 @@ export class StatisticsComponent implements OnInit, OnDestroy, AfterViewInit {
         datasets: [{
           data: [avgSleep, avgStudy, avgOther],
           backgroundColor: [
-            'rgba(99, 102, 241, 0.8)',    // Purple - Sleep
-            'rgba(16, 185, 129, 0.8)',     // Green - Study
-            'rgba(251, 146, 60, 0.8)'      // Orange - Other
+            'rgba(160, 201, 255, 0.8)',    
+            'rgba(220, 255, 243, 0.8)',    
+            'rgba(255, 202, 248, 0.8)'     
           ],
           borderColor: [
-            'rgba(99, 102, 241, 1)',
-            'rgba(16, 185, 129, 1)',
-            'rgba(251, 146, 60, 1)'
+            'rgba(160, 201, 255, 0.8)',    
+            'rgba(220, 255, 243, 0.8)',     
+            'rgba(255, 202, 248, 0.8)'      
           ],
           borderWidth: 2
         }]
