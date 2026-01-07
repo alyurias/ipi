@@ -37,7 +37,7 @@ export class HomeComponent implements OnInit {
   onContactSubmit(event: Event): void {
     event.preventDefault();
     
-    this.notificationService.success('Hvala! Vaša poruka je poslana. Odgovorit ćemo vam uskoro! ✉️');
+    this.notificationService.success('Hvala! Vaša poruka je poslana. Odgovorit ćemo vam uskoro!');
     
     this.contactForm = {
       name: '',

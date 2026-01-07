@@ -1,0 +1,49 @@
+<div class="whiteboard-wrapper">
+  <div class="whiteboard-container">
+    <div class="header">
+      <button class="btn-back" (click)="goBack()">← Povratak u Fun Zone</button>
+      <h1>Interaktivni Whiteboard</h1>
+      <button class="btn-clear" (click)="clearCanvas()">Očisti Ploču</button>
+    </div>
+
+    <div class="toolbar">
+      <div class="tool-group">
+        <label>Odabir Boje</label>
+        <div class="color-picker">
+          <button
+            *ngFor="let color of colors"
+            class="color-btn"
+            [style.background-color]="color"
+            [class.active]="selectedColor === color"
+            (click)="selectColor(color)"
+            [title]="color">
+          </button>
+        </div>
+      </div>
+
+      <div class="tool-group">
+        <label>Veličina Četkice: {{brushSize}}px</label>
+        <input
+          type="range"
+          min="1"
+          max="50"
+          [(ngModel)]="brushSize"
+          class="brush-slider">
+      </div>
+    </div>
+
+    <div class="canvas-container">
+      <canvas
+        #canvas
+        class="drawing-canvas"
+        (mousedown)="startDrawing($event)"
+        (mousemove)="draw($event)"
+        (mouseup)="stopDrawing()"
+        (mouseleave)="stopDrawing()"
+        (touchstart)="startDrawing($event)"
+        (touchmove)="draw($event)"
+        (touchend)="stopDrawing()">
+      </canvas>
+    </div>
+  </div>
+</div>

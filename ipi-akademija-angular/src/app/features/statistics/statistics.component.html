@@ -1,0 +1,187 @@
+<div class="dashboard-layout">
+
+  <aside class="sidebar" [class.open]="sidebarOpen" [class.hidden]="!sidebarVisible">
+    <button class="sidebar-toggle" [class.close]="sidebarOpen" (click)="sidebarOpen ? hideSidebar() : toggleSidebar()">
+      <span class="hamburger-icon" [class.active]="sidebarOpen">
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
+    </button>
+    
+    <div class="sidebar-content">
+      <div class="logo-section">
+        <button class="btn-home" (click)="navigateToHome()">
+          <span>Početna</span>
+        </button>
+      </div>
+
+      <nav class="sidebar-nav">
+        <a routerLink="/dashboard" routerLinkActive="active" class="nav-item">
+          <span>Dashboard</span>
+        </a>
+        <a routerLink="/statistics" routerLinkActive="active" class="nav-item">
+          <span>Statistika</span>
+        </a>
+        <a routerLink="/fun-zone" routerLinkActive="active" class="nav-item">
+          <span>Fun Zone</span>
+        </a>
+        <a routerLink="/settings" routerLinkActive="active" class="nav-item">
+          <span>Postavke</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <button class="btn-logout" (click)="logout()">
+          <span>Odjavi se</span>
+        </button>
+      </div>
+    </div>
+  </aside>
+
+  @if (!sidebarVisible) {
+    <button class="btn-show-sidebar" (click)="showSidebar()">
+      <span class="hamburger-icon">
+        <span></span>
+        <span></span>
+        <span></span>
+      </span>
+    </button>
+  }
+
+
+  <div class="statistics-container" [class.sidebar-hidden]="!sidebarVisible">
+    <div class="stats-header">
+      <h1>Statistika</h1>
+      <p>Pregled vašeg napredka i aktivnosti</p>
+    </div>
+
+
+    <div class="filter-section">
+      <div class="filter-card">
+        <div class="filter-options">
+          <button 
+            class="filter-btn" 
+            [class.active]="selectedPeriod === 'week'"
+            (click)="selectedPeriod = 'week'; onPeriodChange()"
+          >
+            Sedmica
+          </button>
+          
+          <button 
+            class="filter-btn" 
+            [class.active]="selectedPeriod === 'month'"
+            (click)="selectedPeriod = 'month'; onPeriodChange()"
+          >
+            Mjesec
+          </button>
+          
+          <button 
+            class="filter-btn" 
+            [class.active]="selectedPeriod === 'all'"
+            (click)="selectedPeriod = 'all'; onPeriodChange()"
+          >
+            Sve
+          </button>
+        </div>
+
+        <div class="custom-filter">
+          <label for="customDays">Prilagođeni broj dana:</label>
+          <input 
+            type="number" 
+            id="customDays" 
+            [(ngModel)]="customDays" 
+            min="1" 
+            max="365"
+            (change)="selectedPeriod = 'week'; onPeriodChange()"
+          />
+        </div>
+      </div>
+    </div>
+
+
+    <div class="summary-section">
+      <div class="summary-card">
+        <div class="summary-content">
+          <h3>{{ averageSleep }}</h3>
+          <p>Prosječno sati spavanja</p>
+        </div>
+      </div>
+
+      <div class="summary-card">
+        <div class="summary-content">
+          <h3>{{ averageStudy }}</h3>
+          <p>Prosječno sati učenja</p>
+        </div>
+      </div>
+
+      <div class="summary-card">
+        <div class="summary-content">
+          <h3>{{ averageMood }}/5</h3>
+          <p>Prosječno raspoloženje</p>
+        </div>
+      </div>
+
+      <div class="summary-card">
+        <div class="summary-content">
+          <h3>{{ completionRate }}%</h3>
+          <p>Stopa završenosti zadataka</p>
+        </div>
+      </div>
+    </div>
+
+   
+    <div class="charts-section">
+ 
+      <div class="chart-card">
+        <div class="chart-header">
+          <h2>Sati spavanja</h2>
+          <p>Dnevni pregled sati spavanja</p>
+        </div>
+        <div class="chart-container">
+          <canvas #sleepChart></canvas>
+        </div>
+      </div>
+
+     
+      <div class="chart-card">
+        <div class="chart-header">
+          <h2>Vrijeme učenja</h2>
+          <p>Trend sati provedenih u učenju</p>
+        </div>
+        <div class="chart-container">
+          <canvas #studyChart></canvas>
+        </div>
+      </div>
+
+   
+      <div class="chart-card">
+        <div class="chart-header">
+          <h2>Raspoloženje</h2>
+          <p>Distribucija raspoloženja kroz period</p>
+        </div>
+        <div class="chart-container">
+          <canvas #moodChart></canvas>
+        </div>
+      </div>
+
+
+      <div class="chart-card">
+        <div class="chart-header">
+          <h2>Napredak zadataka</h2>
+          <p>Sedmični/mjesečni pregled završenih zadataka</p>
+        </div>
+        <div class="chart-container">
+          <canvas #progressChart></canvas>
+        </div>
+      </div>
+    </div>
+
+ 
+    <div class="actions-section">
+      <button class="btn-reset" (click)="resetData()">
+        Resetuj na demo podatke
+      </button>
+    </div>
+  </div>
+</div>

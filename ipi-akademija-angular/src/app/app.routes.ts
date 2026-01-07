@@ -20,6 +20,11 @@ export const routes: Routes = [
     canActivate: [authGuard]
   },
   {
+    path: 'statistics',
+    loadComponent: () => import('./features/statistics/statistics.component').then(m => m.StatisticsComponent),
+    canActivate: [authGuard]
+  },
+  {
     path: 'fun-zone',
     loadComponent: () => import('./features/fun-zone/fun-zone.component').then(m => m.FunZoneComponent),
     canActivate: [authGuard]
@@ -28,6 +33,34 @@ export const routes: Routes = [
     path: 'settings',
     loadComponent: () => import('./features/settings/settings.component').then(m => m.SettingsComponent),
     canActivate: [authGuard]
+  },
+ 
+  {
+    path: 'fun-zone',
+    canActivate: [authGuard],
+    children: [
+      {
+        path: 'whiteboard',
+        loadComponent: () => import('./features/fun-zone/whiteboard/whiteboard.component').then(m => m.WhiteboardComponent)
+      },
+      {
+        path: 'bingo',
+        loadComponent: () => import('./features/fun-zone/bingo/bingo.component').then(m => m.BingoComponent)
+      },
+      {
+        path: 'quiz',
+        loadComponent: () => import('./features/fun-zone/quiz/quiz.component').then(m => m.QuizComponent)
+      },
+      {
+        path: 'kanban',
+        loadComponent: () => import('./features/fun-zone/kanban/kanban.component').then(m => m.KanbanComponent)
+      },
+      {
+        path: '',
+        pathMatch: 'full',
+        loadComponent: () => import('./features/fun-zone/fun-zone.component').then(m => m.FunZoneComponent)
+      }
+    ]
   },
   {
     path: '**',

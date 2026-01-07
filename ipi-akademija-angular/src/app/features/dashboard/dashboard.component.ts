@@ -7,7 +7,6 @@ import { AuthService } from '../../core/services/auth.service';
 import { ThemeService } from '../../core/services/theme.service';
 import { NotificationService } from '../../core/services/notification.service';
 
-
 import { SleepTrackerComponent } from '../trackers/sleep-tracker/sleep-tracker.component';
 import { StudyPlannerComponent } from '../trackers/study-planner/study-planner.component';
 import { FitnessPlannerComponent } from '../trackers/fitness-planner/fitness-planner.component';
@@ -63,7 +62,6 @@ export class DashboardComponent implements OnInit {
   modulesSelected = false;
   selectedModules: string[] = [];
 
-  
   availableModules: Module[] = [
     { id: 'sleep', name: 'Sleep Tracker', icon: '', description: 'Pratite san' },
     { id: 'study', name: 'Study Planner', icon: '', description: 'Organizujte učenje' },
@@ -115,7 +113,6 @@ export class DashboardComponent implements OnInit {
       this.modulesSelected = true;
     }
     
-    
     const sidebarHidden = localStorage.getItem('sidebarHidden');
     if (sidebarHidden === 'true') {
       this.sidebarVisible = false;
@@ -129,7 +126,7 @@ export class DashboardComponent implements OnInit {
   toggleModule(id: string): void {
     const module = this.availableModules.find(m => m.id === id);
     
-    // Prevent selection of coming soon modules
+ 
     if (module?.comingSoon) {
       this.notificationService.success('Ovaj tracker će biti dostupan uskoro!');
       return;
