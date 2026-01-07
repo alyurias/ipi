@@ -1,4 +1,6 @@
-@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700&display=swap');oholika * {
+@import url('https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Roboto:wght@400;500;700&display=swap');
+
+* {
   font-family: 'Roboto', sans-serif;
 }
 
@@ -102,7 +104,6 @@ h1, h2, h3, h4, h5, h6 {
   display: none;
 }
 
-
 .hamburger-icon {
   width: 24px;
   height: 20px;
@@ -154,7 +155,7 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--surface);
   border: none;
   border-radius: 14px;
-  font-size: 15px;
+  font-size: 13px;
   font-weight: 600;
   cursor: pointer;
   display: flex;
@@ -164,7 +165,6 @@ h1, h2, h3, h4, h5, h6 {
   transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   letter-spacing: 0.5px;
   text-transform: uppercase;
-  font-size: 13px;
 }
 
 .btn-home:hover {
@@ -395,6 +395,8 @@ h1, h2, h3, h4, h5, h6 {
   border-radius: 8px;
   font-size: 14px;
   font-family: inherit;
+  background: var(--surface);
+  color: var(--text);
   transition: all 0.3s ease;
 }
 
@@ -456,6 +458,7 @@ h1, h2, h3, h4, h5, h6 {
   font-weight: 500;
 }
 
+/* BUTTONS */
 .btn {
   padding: 10px 20px;
   border: none;
@@ -470,7 +473,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .btn-primary {
   background: var(--primary, #4CAF50);
-  color: white;
+  color: var(--surface);
 }
 
 .btn-primary:hover {
@@ -486,7 +489,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .btn-secondary:hover {
   background: var(--primary, #4CAF50);
-  color: white;
+  color: var(--surface);
 }
 
 .btn-warning {
@@ -500,12 +503,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn-danger {
-  background: #f44336;
+  background: #dc2626;
   color: white;
 }
 
 .btn-danger:hover:not(:disabled) {
-  background: #d32f2f;
+  background: #b91c1c;
   transform: translateY(-2px);
 }
 
@@ -525,16 +528,23 @@ h1, h2, h3, h4, h5, h6 {
   background: var(--surface-alt, #f5f5f5);
 }
 
+/* DANGER ZONE - No border, only red delete button */
 .danger-zone {
-  border: 2px solid #f44336;
-  background: #ffebee;
+  background: var(--surface);
+  border: none;
+  padding: 30px;
 }
 
 .danger-zone h2 {
-  color: #f44336;
-  border-bottom-color: #f44336;
+  color: var(--text);
+  border-bottom-color: var(--border);
 }
 
+.danger-zone .section-description {
+  color: var(--text-muted);
+}
+
+/* MODAL */
 .modal-overlay {
   position: fixed;
   top: 0;
@@ -558,7 +568,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .modal-danger {
-  border: 3px solid #f44336;
+  border: 3px solid #dc2626;
 }
 
 .modal-header {
@@ -609,7 +619,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .modal-warning {
-  color: #f44336;
+  color: #dc2626;
   font-weight: 600;
   font-size: 1.05rem;
 }
@@ -633,18 +643,20 @@ h1, h2, h3, h4, h5, h6 {
 .danger-input {
   width: 100%;
   padding: 12px;
-  border: 2px solid #f44336;
+  border: 2px solid #dc2626;
   border-radius: 8px;
   font-size: 16px;
   font-family: inherit;
   margin-top: 12px;
   font-weight: 600;
   text-align: center;
+  background: var(--surface);
+  color: var(--text);
 }
 
 .danger-input:focus {
   outline: none;
-  box-shadow: 0 0 0 3px rgba(244, 67, 54, 0.2);
+  box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.2);
 }
 
 .modal-footer {
@@ -673,6 +685,69 @@ h1, h2, h3, h4, h5, h6 {
   color: var(--text-muted, #666);
   font-size: 14px;
   margin: 0;
+}
+
+/* THEME OVERRIDES FOR DARK THEME */
+[data-theme="dark"] .btn-primary {
+  background: #3A3A3C;
+  color: #F5F5F7;
+}
+
+[data-theme="dark"] .btn-primary:hover {
+  background: #48484A;
+}
+
+[data-theme="dark"] .btn-secondary {
+  border-color: #8E8E93;
+  color: #F5F5F7;
+}
+
+[data-theme="dark"] .btn-secondary:hover {
+  background: #3A3A3C;
+  color: #F5F5F7;
+  border-color: #3A3A3C;
+}
+
+[data-theme="dark"] .setting-input,
+[data-theme="dark"] .danger-input {
+  background: #2C2C2E;
+  color: #F5F5F7;
+  border-color: #38383A;
+}
+
+/* THEME OVERRIDES FOR CYBERPUNK THEME */
+[data-theme="cyberpunk"] .btn-primary {
+  background: #2D1852;
+  color: #F0E7FF;
+  box-shadow: 0 0 20px rgba(157, 92, 255, 0.2);
+}
+
+[data-theme="cyberpunk"] .btn-primary:hover {
+  background: #3D2661;
+  box-shadow: 0 4px 24px rgba(157, 92, 255, 0.3);
+}
+
+[data-theme="cyberpunk"] .btn-secondary {
+  border-color: #9D5CFF;
+  color: #C2A0FF;
+}
+
+[data-theme="cyberpunk"] .btn-secondary:hover {
+  background: #2D1852;
+  color: #F0E7FF;
+  border-color: #9D5CFF;
+}
+
+[data-theme="cyberpunk"] .setting-input,
+[data-theme="cyberpunk"] .danger-input {
+  background: #0A0118;
+  color: #F0E7FF;
+  border-color: #3D2661;
+}
+
+[data-theme="cyberpunk"] .theme-option.selected .theme-preview {
+  border-color: #9D5CFF;
+  box-shadow: 0 4px 16px rgba(157, 92, 255, 0.4);
 }
 
 /* RESPONSIVE */
