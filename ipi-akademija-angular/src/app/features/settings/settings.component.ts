@@ -13,6 +13,7 @@ interface ThemeOption {
     primary: string;
     secondary: string;
   };
+  icon?: string; 
 }
 
 @Component({
@@ -32,15 +33,55 @@ export class SettingsComponent implements OnInit {
   sidebarOpen = true;
   sidebarVisible = true;
 
-
+ 
   availableThemes: ThemeOption[] = [
-    { id: 'default', name: 'Default (Tamno plava)', colors: { primary: '#0D1B2A', secondary: '#1B263B' } },
-    { id: 'green', name: 'Zelena', colors: { primary: '#1A3A2A', secondary: '#2D5F47' } },
-    { id: 'blue', name: 'Plava', colors: { primary: '#0F2540', secondary: '#1B3A5F' } },
-    { id: 'pink', name: 'Roze', colors: { primary: '#4A1528', secondary: '#6B2A42' } },
-    { id: 'orange', name: 'Narandžasta', colors: { primary: '#3D1F0A', secondary: '#5F3418' } },
-    { id: 'dark', name: 'Tamna', colors: { primary: '#1C1C1E', secondary: '#2C2C2E' } },
-    { id: 'cyberpunk', name: 'Cyberpunk', colors: { primary: '#0A0118', secondary: '#1A0B2E' } }
+    { 
+      id: 'default', 
+      name: 'Default (Tamno plava)', 
+      colors: { primary: '#0D1B2A', secondary: '#1B263B' } 
+    },
+    { 
+      id: 'green', 
+      name: 'Zelena', 
+      colors: { primary: '#1A3A2A', secondary: '#2D5F47' } 
+    },
+    { 
+      id: 'blue', 
+      name: 'Plava', 
+      colors: { primary: '#0F2540', secondary: '#1B3A5F' } 
+    },
+    { 
+      id: 'pink', 
+      name: 'Roze', 
+      colors: { primary: '#4A1528', secondary: '#6B2A42' } 
+    },
+    { 
+      id: 'orange', 
+      name: 'Narandžasta', 
+      colors: { primary: '#3D1F0A', secondary: '#5F3418' } 
+    },
+    { 
+      id: 'dark', 
+      name: 'Tamna', 
+      colors: { primary: '#1C1C1E', secondary: '#2C2C2E' } 
+    },
+    { 
+      id: 'cyberpunk', 
+      name: 'Cyberpunk', 
+      colors: { primary: '#0A0118', secondary: '#1A0B2E' } 
+    },
+    { 
+      id: 'newyear', 
+      name: 'Novogodišnja', 
+      colors: { primary: '#1E3A5F', secondary: '#2B5278' },
+
+    },
+    { 
+      id: 'spring', 
+      name: 'Proljetna', 
+      colors: { primary: '#C75B7A', secondary: '#D77A8E' },
+   
+    }
   ];
   
   selectedTheme: string = 'default';
@@ -49,10 +90,10 @@ export class SettingsComponent implements OnInit {
   newUsername: string = '';
   isEditingUsername: boolean = false;
   
-
+  
   showModulesResetModal: boolean = false;
   
-
+ 
   showDeleteModal: boolean = false;
   deleteConfirmText: string = '';
 
@@ -73,7 +114,7 @@ export class SettingsComponent implements OnInit {
     this.selectedTheme = this.themeService.getCurrentTheme();
   }
 
-
+ 
   toggleSidebar(): void {
     this.sidebarOpen = !this.sidebarOpen;
   }
@@ -92,17 +133,24 @@ export class SettingsComponent implements OnInit {
     this.router.navigate(['/']);
   }
 
-
+  
   changeTheme(themeId: string): void {
     this.selectedTheme = themeId;
     this.themeService.applyTheme(themeId);
-    
-    
+  
     const user = this.currentUser();
     if (user) {
       const updatedUser = { ...user, theme: themeId };
       this.authService.updateUserProfile(updatedUser);
-      this.notificationService.success('Tema je uspješno promijenjena!');
+      
+   
+      if (themeId === 'newyear') {
+        this.notificationService.success('Novogodišnja tema aktivirana! ❄️ Neka pada snijeg!');
+      } else if (themeId === 'spring') {
+        this.notificationService.success('Proljetna tema aktivirana! 🌸 Neka cvjetaju latice!');
+      } else {
+        this.notificationService.success('Tema je uspješno promijenjena!');
+      }
     }
   }
 
@@ -111,7 +159,7 @@ export class SettingsComponent implements OnInit {
     return theme?.colors || { primary: '#0D1B2A', secondary: '#1B263B' };
   }
 
-
+ 
   startEditingUsername(): void {
     this.isEditingUsername = true;
     this.newUsername = this.currentUser()?.name || '';
@@ -157,16 +205,16 @@ export class SettingsComponent implements OnInit {
     const user = this.currentUser();
     if (user) {
       try {
-    
+ 
         await this.authService.updateUserProfile({ enabledModules: [] });
         
-     
+        
         localStorage.removeItem(`modules_${user.uid}`);
         
         this.notificationService.success('Trackeri su uspješno resetovani! Možete ponovo odabrati.');
         this.closeModulesResetModal();
         
-     
+    
         setTimeout(() => {
           this.router.navigate(['/dashboard']);
         }, 1000);
@@ -176,7 +224,7 @@ export class SettingsComponent implements OnInit {
     }
   }
 
- 
+
   openDeleteModal(): void {
     this.showDeleteModal = true;
     this.deleteConfirmText = '';
@@ -197,7 +245,7 @@ export class SettingsComponent implements OnInit {
     
     if (confirmed) {
       try {
-       
+        
         const result = await this.authService.deleteUserAccount();
         
         if (result.success) {
