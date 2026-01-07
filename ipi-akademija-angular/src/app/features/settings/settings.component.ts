@@ -33,7 +33,9 @@ export class SettingsComponent implements OnInit {
   sidebarOpen = true;
   sidebarVisible = true;
 
- 
+  // Chatbot
+  chatbotEnabled = false;
+
   availableThemes: ThemeOption[] = [
     { 
       id: 'default', 
@@ -86,20 +88,18 @@ export class SettingsComponent implements OnInit {
   
   selectedTheme: string = 'default';
   
-
   newUsername: string = '';
   isEditingUsername: boolean = false;
   
-  
   showModulesResetModal: boolean = false;
   
- 
   showDeleteModal: boolean = false;
   deleteConfirmText: string = '';
 
   ngOnInit(): void {
     this.loadSidebarState();
     this.loadCurrentTheme();
+    this.loadChatbotState();
     this.newUsername = this.currentUser()?.name || '';
   }
 
@@ -114,7 +114,26 @@ export class SettingsComponent implements OnInit {
     this.selectedTheme = this.themeService.getCurrentTheme();
   }
 
- 
+  loadChatbotState(): void {
+    const chatbotState = localStorage.getItem('chatbotEnabled');
+    this.chatbotEnabled = chatbotState === 'true';
+  }
+
+  toggleChatbot(): void {
+    localStorage.setItem('chatbotEnabled', this.chatbotEnabled.toString());
+    
+    if (this.chatbotEnabled) {
+      this.notificationService.success('Virtuelni asistent je ukljucen!');
+    } else {
+      this.notificationService.info('Virtuelni asistent je iskljucen.');
+    }
+
+    // Emit event for chatbot component to listen
+    window.dispatchEvent(new CustomEvent('chatbotToggle', { 
+      detail: { enabled: this.chatbotEnabled } 
+    }));
+  }
+
   toggleSidebar(): void {
     this.sidebarOpen = !this.sidebarOpen;
   }
@@ -133,7 +152,6 @@ export class SettingsComponent implements OnInit {
     this.router.navigate(['/']);
   }
 
-  
   changeTheme(themeId: string): void {
     this.selectedTheme = themeId;
     this.themeService.applyTheme(themeId);
@@ -143,7 +161,6 @@ export class SettingsComponent implements OnInit {
       const updatedUser = { ...user, theme: themeId };
       this.authService.updateUserProfile(updatedUser);
       
-   
       if (themeId === 'newyear') {
         this.notificationService.success('Novogodišnja tema aktivirana!');
       } else if (themeId === 'spring') {
@@ -159,7 +176,6 @@ export class SettingsComponent implements OnInit {
     return theme?.colors || { primary: '#0D1B2A', secondary: '#1B263B' };
   }
 
- 
   startEditingUsername(): void {
     this.isEditingUsername = true;
     this.newUsername = this.currentUser()?.name || '';
@@ -192,7 +208,6 @@ export class SettingsComponent implements OnInit {
     }
   }
 
-
   openModulesResetModal(): void {
     this.showModulesResetModal = true;
   }
@@ -205,16 +220,12 @@ export class SettingsComponent implements OnInit {
     const user = this.currentUser();
     if (user) {
       try {
- 
         await this.authService.updateUserProfile({ enabledModules: [] });
-        
-        
         localStorage.removeItem(`modules_${user.uid}`);
         
         this.notificationService.success('Trackeri su uspješno resetovani! Možete ponovo odabrati.');
         this.closeModulesResetModal();
         
-    
         setTimeout(() => {
           this.router.navigate(['/dashboard']);
         }, 1000);
@@ -223,7 +234,6 @@ export class SettingsComponent implements OnInit {
       }
     }
   }
-
 
   openDeleteModal(): void {
     this.showDeleteModal = true;
@@ -245,7 +255,6 @@ export class SettingsComponent implements OnInit {
     
     if (confirmed) {
       try {
-        
         const result = await this.authService.deleteUserAccount();
         
         if (result.success) {
