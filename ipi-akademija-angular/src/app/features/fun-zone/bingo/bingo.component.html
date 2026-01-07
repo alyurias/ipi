@@ -1,0 +1,46 @@
+<div class="bingo-wrapper">
+  <div class="bingo-container">
+    <div class="header">
+      <button class="btn-back" (click)="goBack()">← Povratak u Fun Zone</button>
+      <h1>Bingo</h1>
+      <button class="btn-start" *ngIf="!gameStarted" (click)="startGame()">Započni Igru</button>
+      <button class="btn-reset" *ngIf="gameStarted" (click)="resetGame()">Nova Igra</button>
+    </div>
+
+    <div class="content">
+      <div class="info-card" *ngIf="!gameStarted">
+        <h2>Pravila igre</h2>
+        <p>Kliknite na ćelije koje se odnose na vaše prijatelje. Cilj je napraviti liniju od 5 ćelija (vodoravno, okomito ili dijagonalno).</p>
+        <p>Središnja ćelija je već označena kao "FREE". Kada napravite BINGO, dobit ćete obavijest!</p>
+      </div>
+
+      <div class="game-board" *ngIf="gameStarted">
+        <div class="bingo-grid">
+          <div class="grid-row" *ngFor="let row of bingoGrid; let i = index">
+            <div
+              class="bingo-cell"
+              *ngFor="let cell of row; let j = index"
+              [class.selected]="cell.selected"
+              [class.free]="i === 2 && j === 2"
+              (click)="toggleCell(i, j)">
+              <span class="cell-text">{{cell.text}}</span>
+              <div *ngIf="cell.selected && !(i === 2 && j === 2)" class="checkmark"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="game-info">
+          <div class="info-item">
+            <span class="info-label">Označeno:</span>
+            <span class="info-value">{{getSelectedCount()}}/25</span>
+          </div>
+          <div class="info-item">
+            <span class="info-label">Status:</span>
+            <span class="info-value" *ngIf="!bingoWon">U toku</span>
+            <span class="info-value win" *ngIf="bingoWon">BINGO!</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
