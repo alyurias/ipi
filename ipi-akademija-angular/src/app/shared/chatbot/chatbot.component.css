@@ -324,7 +324,7 @@
   cursor: not-allowed;
 }
 
-/* Theme Support - Dark */
+
 [data-theme="dark"] .chatbot-button {
   background: #3A3A3C;
 }
@@ -409,7 +409,7 @@
   box-shadow: 0 0 10px rgba(157, 92, 255, 0.2);
 }
 
-/* Responsive */
+
 @media (max-width: 768px) {
   .chatbot-wrapper {
     bottom: 16px;

@@ -47,14 +47,14 @@ export class ChatbotComponent implements OnInit, OnDestroy {
   ];
 
   ngOnInit(): void {
-    // Subscribe to statistics data
+ 
     this.statisticsService.statistics$
       .pipe(takeUntil(this.destroy$))
       .subscribe(data => {
         this.statsData = data;
         console.log('Chatbot loaded stats:', data);
         
-        // Show greeting only on first load
+     
         if (this.messages.length === 0) {
           this.addBotMessage(this.getFriendlyGreeting());
         }

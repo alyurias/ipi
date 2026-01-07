@@ -28,10 +28,12 @@ export class StatisticsComponent implements OnInit, OnDestroy, AfterViewInit {
 
   @ViewChild('sleepChart') sleepChartRef!: ElementRef<HTMLCanvasElement>;
   @ViewChild('studyChart') studyChartRef!: ElementRef<HTMLCanvasElement>;
+  @ViewChild('waterChart') waterChartRef!: ElementRef<HTMLCanvasElement>;
   @ViewChild('overviewChart') overviewChartRef!: ElementRef<HTMLCanvasElement>;
 
   private sleepChart?: Chart;
   private studyChart?: Chart;
+  private waterChart?: Chart;
   private overviewChart?: Chart;
 
   statisticsData?: StatisticsData;
@@ -45,9 +47,9 @@ export class StatisticsComponent implements OnInit, OnDestroy, AfterViewInit {
   averageSleep = 0;
   averageStudy = 0;
   averageMood = 0;
+  averageWater = 0;
 
   ngOnInit(): void {
-    // KRITIČNO: Primijeni temu odmah pri učitavanju komponente
     this.themeService.applyUserTheme();
     this.loadStatistics();
     this.loadSidebarState();
@@ -160,6 +162,13 @@ export class StatisticsComponent implements OnInit, OnDestroy, AfterViewInit {
     } else {
       this.averageMood = 0;
     }
+
+    if (this.statisticsData.water.length > 0) {
+      const totalWater = this.statisticsData.water.reduce((sum, w) => sum + w.glasses, 0);
+      this.averageWater = parseFloat((totalWater / this.statisticsData.water.length).toFixed(1));
+    } else {
+      this.averageWater = 0;
+    }
   }
 
   createCharts(): void {
@@ -170,6 +179,7 @@ export class StatisticsComponent implements OnInit, OnDestroy, AfterViewInit {
 
     this.createSleepChart();
     this.createStudyChart();
+    this.createWaterChart();
     this.createOverviewChart();
   }
 
@@ -273,6 +283,67 @@ export class StatisticsComponent implements OnInit, OnDestroy, AfterViewInit {
     this.studyChart = new Chart(ctx, config);
   }
 
+  createWaterChart(): void {
+    if (!this.waterChartRef?.nativeElement || !this.statisticsData) return;
+
+    const ctx = this.waterChartRef.nativeElement.getContext('2d');
+    if (!ctx) return;
+
+    const labels = this.statisticsData.water.map(w => this.formatDate(w.date));
+    const data = this.statisticsData.water.map(w => w.glasses);
+    const goals = this.statisticsData.water.map(w => w.goal);
+
+    const config: ChartConfiguration = {
+      type: 'bar',
+      data: {
+        labels,
+        datasets: [
+          {
+            label: 'Popijeno čaša',
+            data,
+            backgroundColor: 'rgba(79, 195, 247, 0.8)',
+            borderColor: 'rgba(0, 0, 0, 1)',
+            borderWidth: 2,
+            borderRadius: 8
+          },
+          {
+            label: 'Cilj',
+            data: goals,
+            type: 'line',
+            borderColor: 'rgba(255, 152, 0, 1)',
+            borderWidth: 2,
+            borderDash: [5, 5],
+            pointRadius: 0,
+            fill: false
+          }
+        ]
+      },
+      options: {
+        responsive: true,
+        maintainAspectRatio: false,
+        plugins: {
+          legend: {
+            display: true,
+            position: 'top'
+          },
+          title: {
+            display: false
+          }
+        },
+        scales: {
+          y: {
+            beginAtZero: true,
+            ticks: {
+              stepSize: 2
+            }
+          }
+        }
+      }
+    };
+
+    this.waterChart = new Chart(ctx, config);
+  }
+
   createOverviewChart(): void {
     if (!this.overviewChartRef?.nativeElement || !this.statisticsData) return;
 
@@ -354,6 +425,10 @@ export class StatisticsComponent implements OnInit, OnDestroy, AfterViewInit {
     if (this.studyChart) {
       this.studyChart.destroy();
       this.studyChart = undefined;
+    }
+    if (this.waterChart) {
+      this.waterChart.destroy();
+      this.waterChart = undefined;
     }
     if (this.overviewChart) {
       this.overviewChart.destroy();

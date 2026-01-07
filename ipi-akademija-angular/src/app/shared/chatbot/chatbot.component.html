@@ -1,5 +1,5 @@
 <div class="chatbot-wrapper">
-  <!-- Chatbot Button -->
+
   @if (!isOpen) {
     <button class="chatbot-button" (click)="toggleChat()" title="Otvori chat asistenta">
       <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -8,10 +8,10 @@
     </button>
   }
 
-  <!-- Chatbot Window -->
+
   @if (isOpen) {
     <div class="chatbot-window" [class.minimized]="isMinimized">
-      <!-- Header -->
+
       <div class="chatbot-header">
         <div class="header-left">
           <div class="bot-avatar">
@@ -56,7 +56,7 @@
       </div>
 
       @if (!isMinimized) {
-        <!-- Messages -->
+   
         <div class="chat-messages">
           @for (message of messages; track message.timestamp) {
             <div class="message" [class.user-message]="message.isUser" [class.bot-message]="!message.isUser">
@@ -77,7 +77,7 @@
           }
         </div>
 
-        <!-- Quick Questions -->
+        
         <div class="quick-questions">
           <p class="quick-questions-label">Brza pitanja:</p>
           <div class="questions-grid">

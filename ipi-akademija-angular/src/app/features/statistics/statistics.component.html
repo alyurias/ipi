@@ -97,7 +97,7 @@
       </div>
     </div>
 
- 
+
     <div class="summary-section">
       <div class="summary-card">
         <div class="summary-content">
@@ -119,6 +119,13 @@
           <p>Prosječno raspoloženje</p>
         </div>
       </div>
+
+      <div class="summary-card">
+        <div class="summary-content">
+          <h3>{{ averageWater }}</h3>
+          <p>Prosječno čaša vode</p>
+        </div>
+      </div>
     </div>
 
 
@@ -134,7 +141,7 @@
         </div>
       </div>
 
-   
+ 
       <div class="chart-card">
         <div class="chart-header">
           <h2>Vrijeme učenja</h2>
@@ -142,6 +149,17 @@
         </div>
         <div class="chart-container">
           <canvas #studyChart></canvas>
+        </div>
+      </div>
+
+   
+      <div class="chart-card">
+        <div class="chart-header">
+          <h2>Unos vode</h2>
+          <p>Praćenje dnevne hidratacije</p>
+        </div>
+        <div class="chart-container">
+          <canvas #waterChart></canvas>
         </div>
       </div>
 

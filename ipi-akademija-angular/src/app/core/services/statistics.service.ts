@@ -20,10 +20,17 @@ export interface MoodData {
   factors: string[];
 }
 
+export interface WaterData {
+  date: string;
+  glasses: number;
+  goal: number;
+}
+
 export interface StatisticsData {
   sleep: SleepData[];
   study: StudyData[];
   mood: MoodData[];
+  water: WaterData[];
 }
 
 @Injectable({
@@ -35,7 +42,8 @@ export class StatisticsService {
   private statisticsSubject = new BehaviorSubject<StatisticsData>({
     sleep: [],
     study: [],
-    mood: []
+    mood: [],
+    water: []
   });
 
   statistics$ = this.statisticsSubject.asObservable();
@@ -54,11 +62,13 @@ export class StatisticsService {
     const sleepData = this.loadSleepData(userId);
     const studyData = this.loadStudyData(userId);
     const moodData = this.loadMoodData(userId);
+    const waterData = this.loadWaterData(userId);
 
     this.statisticsSubject.next({
       sleep: sleepData,
       study: studyData,
-      mood: moodData
+      mood: moodData,
+      water: waterData
     });
   }
 
@@ -113,6 +123,26 @@ export class StatisticsService {
     }
   }
 
+  private loadWaterData(userId: string): WaterData[] {
+    try {
+      const stored = localStorage.getItem(`water_${userId}`);
+      const goalStored = localStorage.getItem(`water_goal_${userId}`);
+      const goal = goalStored ? parseInt(goalStored) : 8;
+      
+      if (!stored) return [];
+
+      const entries = JSON.parse(stored);
+      return entries.map((entry: any) => ({
+        date: entry.date,
+        glasses: entry.glasses || 0,
+        goal: goal
+      }));
+    } catch (error) {
+      console.error('Error loading water data:', error);
+      return [];
+    }
+  }
+
   getDataForPeriod(days: number): StatisticsData {
     const allData = this.statisticsSubject.value;
     const cutoffDate = new Date();
@@ -122,7 +152,8 @@ export class StatisticsService {
     return {
       sleep: allData.sleep.filter(s => s.date >= cutoffStr),
       study: allData.study.filter(s => s.date >= cutoffStr),
-      mood: allData.mood.filter(m => m.date >= cutoffStr)
+      mood: allData.mood.filter(m => m.date >= cutoffStr),
+      water: allData.water.filter(w => w.date >= cutoffStr)
     };
   }
 
@@ -135,41 +166,50 @@ export class StatisticsService {
     const demoSleep: SleepData[] = [];
     const demoStudy: StudyData[] = [];
     const demoMood: MoodData[] = [];
+    const demoWater: WaterData[] = [];
 
-    // Generate demo data for the last 14 days
+
     for (let i = 0; i < 14; i++) {
       const date = new Date(today);
       date.setDate(today.getDate() - i);
       const dateStr = date.toISOString().split('T')[0];
 
-      // Sleep data
+     
       demoSleep.push({
         date: dateStr,
-        hours: 6 + Math.random() * 3, // 6-9 hours
-        quality: Math.floor(Math.random() * 3) + 3 // 3-5 quality
+        hours: 6 + Math.random() * 3, 
+        quality: Math.floor(Math.random() * 3) + 3 
       });
 
-      // Study data (every other day)
+   
       if (i % 2 === 0) {
         demoStudy.push({
           date: dateStr,
-          hours: 1 + Math.random() * 3, // 1-4 hours
+          hours: 1 + Math.random() * 3, 
           subject: ['Matematika', 'Fizika', 'Programiranje', 'Engleski'][Math.floor(Math.random() * 4)]
         });
       }
 
-      // Mood data
+    
       demoMood.push({
         date: dateStr,
-        rating: Math.floor(Math.random() * 5) + 1, // 1-5 rating
+        rating: Math.floor(Math.random() * 5) + 1, 
         factors: ['Posao', 'Porodica', 'Zdravlje']
+      });
+
+    
+      demoWater.push({
+        date: dateStr,
+        glasses: Math.floor(Math.random() * 10) + 3, 
+        goal: 8
       });
     }
 
     this.statisticsSubject.next({
       sleep: demoSleep,
       study: demoStudy,
-      mood: demoMood
+      mood: demoMood,
+      water: demoWater
     });
   }
 
