@@ -18,7 +18,7 @@
           @if (currentUser()) {
             <li>
               <button class="nav-link login-btn logged-in" (click)="toggleUserMenu($event)">
-                <span style="margin-right: 8px;">👤</span>
+         
                 <span>{{ currentUser()?.name }}</span>
               </button>
             </li>
@@ -37,14 +37,14 @@
   </nav>
 </header>
 
-<!-- User Dropdown Menu -->
+
 @if (showUserMenu) {
   <div class="user-dropdown-menu" [style.top.px]="menuPosition.top" [style.right.px]="menuPosition.right">
     <div class="menu-item" (click)="goToDashboard()">
-      <span>🎯</span> Dashboard
+      <span></span> Dashboard
     </div>
     <div class="menu-item" (click)="logout()">
-      <span>🚪</span> Odjavi se
+      <span></span> Odjavi se
     </div>
   </div>
 }
